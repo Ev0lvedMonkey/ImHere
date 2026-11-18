@@ -1,6 +1,7 @@
 package com.imhere.app.location
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.PackageManager
 import android.location.Location
@@ -115,6 +116,11 @@ class LocationResolver(private val context: Context) {
         return LocationOutcome.Failure(failure)
     }
 
+    /**
+     * [resolve] verifies the location permission before calling this method; every
+     * protected call below is additionally wrapped by the caller's try/catch.
+     */
+    @SuppressLint("MissingPermission")
     private suspend fun requestFusedFix(acceptInexact: Boolean): Location? {
         val client = LocationServices.getFusedLocationProviderClient(context)
         val cached = try {
@@ -160,6 +166,8 @@ class LocationResolver(private val context: Context) {
         return fresh ?: bestRef.get()
     }
 
+    /** Permission is verified by [resolve] before any platform request. */
+    @SuppressLint("MissingPermission")
     private suspend fun requestPlatformFix(acceptInexact: Boolean): Location? {
         val manager = locationManager ?: return null
         val providers = listOf(LocationManager.GPS_PROVIDER, LocationManager.NETWORK_PROVIDER)
@@ -204,6 +212,8 @@ class LocationResolver(private val context: Context) {
         return fresh ?: bestRef.get()
     }
 
+    /** Permission is verified by [resolve] before the last known fix is read. */
+    @SuppressLint("MissingPermission")
     private fun lastKnownFix(): Location? {
         val manager = locationManager ?: return null
         val providers = buildList {
@@ -218,7 +228,6 @@ class LocationResolver(private val context: Context) {
     }
 
     private fun isValidNow(location: Location, acceptInexact: Boolean): Boolean {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR1) return false
         if (!location.hasAccuracy()) return false
         if (!acceptInexact && location.accuracy > MAX_ACCURACY_METERS) return false
         val age = ageMillis(location)

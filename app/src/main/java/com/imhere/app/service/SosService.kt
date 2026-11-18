@@ -93,6 +93,7 @@ class SosService : Service() {
 
         scope.launch {
             var shown = false
+            var success = false
             try {
                 val acceptInexact = PrototypeSettings.acceptInexactLocation(this@SosService)
                 val artificialDelay = PrototypeSettings.artificialDelayMillis(this@SosService)
@@ -121,6 +122,7 @@ class SosService : Service() {
                             text,
                         )
                         shown = true
+                        success = true
                     }
 
                     is LocationOutcome.Failure -> {
@@ -146,7 +148,7 @@ class SosService : Service() {
                     )
                 }
             } finally {
-                withContext(Dispatchers.Main) { finishOperation() }
+                withContext(Dispatchers.Main) { finishOperation(success) }
             }
         }
 
@@ -164,10 +166,13 @@ class SosService : Service() {
         super.onDestroy()
     }
 
-    private fun finishOperation() {
-        Log.i(TAG, "SOS operation finished")
+    private fun finishOperation(successful: Boolean) {
+        Log.i(TAG, "SOS operation finished, successful=$successful")
         running.set(false)
         WidgetStateStore.setOperationActive(this, false)
+        if (successful) {
+            WidgetStateStore.startCooldown(this, SOS_COOLDOWN_MS)
+        }
         WidgetRenderer.updateAll(this)
         releaseWakeLock()
         ServiceCompat.stopForeground(this, ServiceCompat.STOP_FOREGROUND_REMOVE)
@@ -219,6 +224,9 @@ class SosService : Service() {
         private const val ACTION_START_SOS = "com.imhere.app.action.START_SOS"
         private const val EXTRA_SOURCE = "source"
         private const val WAKE_LOCK_TIMEOUT_MS = 2 * 60_000L
+
+        /** Extra taps right after a successful operation are ignored. */
+        private const val SOS_COOLDOWN_MS = 5_000L
 
         private val running = AtomicBoolean(false)
 

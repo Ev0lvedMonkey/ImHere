@@ -2,6 +2,92 @@
 <resources>
     <string name="app_name">ImHere</string>
 
+    <!-- Common -->
+    <string name="common_back">Назад</string>
+    <string name="common_cancel">Отмена</string>
+    <string name="common_save">Сохранить</string>
+    <string name="common_done">Готово</string>
+
+    <!-- Main screen -->
+    <string name="main_sos">SOS</string>
+    <string name="main_sos_hint">Отправить сигнал помощи SOS-контактам</string>
+    <string name="main_send_location">Отправить геолокацию</string>
+    <string name="main_settings">Настройки</string>
+    <string name="main_stage_stub">Отправка сообщений появится на следующем этапе разработки.</string>
+    <string name="main_sos_contacts_title">SOS-контакты</string>
+    <string name="main_sos_contacts_none">Не выбраны</string>
+    <string name="main_sos_contacts_count">Выбрано: %1$d</string>
+    <string name="main_sim_title">SIM-карта</string>
+    <string name="main_sim_none">Не выбрана</string>
+    <string name="main_location_available">Геолокация доступна</string>
+    <string name="main_location_disabled">Геолокация выключена</string>
+    <string name="main_location_disabled_hint">Включите службы геолокации, чтобы отправить координаты.</string>
+    <string name="main_location_no_permission">Нет разрешения на геолокацию</string>
+    <string name="main_location_no_permission_hint">Без разрешения приложение не сможет получить координаты.</string>
+    <string name="main_grant_permissions">Выдать</string>
+    <string name="main_open_location_settings">Открыть</string>
+    <string name="main_disclaimer">Приложение не является заменой официальным экстренным службам.</string>
+
+    <!-- Contacts -->
+    <string name="contacts_title">Контакты</string>
+    <string name="contacts_empty">Контактов пока нет</string>
+    <string name="contacts_empty_hint">Добавьте контакт вручную или выберите из телефонной книги.</string>
+    <string name="contacts_add">Добавить</string>
+    <string name="contacts_pick">Выбрать из телефонной книги</string>
+    <string name="contacts_sos_short">SOS</string>
+    <string name="contacts_delete">Удалить</string>
+    <string name="contacts_delete_title">Удалить контакт?</string>
+    <string name="contacts_delete_text">«%1$s» будет удалён из списка и из получателей SOS.</string>
+    <string name="contacts_delete_confirm">Удалить</string>
+    <string name="contact_edit_new">Новый контакт</string>
+    <string name="contact_edit_existing">Изменить контакт</string>
+    <string name="contact_name">Имя</string>
+    <string name="contact_phone">Номер телефона</string>
+    <string name="contact_phone_hint">+7 900 000-00-00</string>
+    <string name="contact_sos_checkbox">Использовать для SOS</string>
+    <string name="contact_error_name_empty">Введите имя</string>
+    <string name="contact_error_phone_invalid">Некорректный номер</string>
+    <string name="contact_error_duplicate">Контакт с таким номером уже есть</string>
+    <string name="contact_import_failed">Не удалось прочитать выбранный контакт</string>
+    <string name="contact_import_denied">Без доступа к контактам выбрать номер нельзя. Добавьте контакт вручную.</string>
+    <string name="contact_import_permission_text">Доступ к контактам запрашивается только чтобы скопировать выбранный номер.</string>
+
+    <!-- Settings -->
+    <string name="settings_title">Настройки</string>
+    <string name="settings_section_messages">Сообщения</string>
+    <string name="settings_sos_template">Шаблон SOS</string>
+    <string name="settings_plain_template">Шаблон геолокации</string>
+    <string name="settings_section_recipients">Получатели</string>
+    <string name="settings_sos_contacts">SOS-контакты</string>
+    <string name="settings_sos_contacts_count">Выбрано: %1$d</string>
+    <string name="settings_section_sim">SIM-карта</string>
+    <string name="settings_sim">SIM для отправки SMS</string>
+    <string name="settings_sim_none">Не выбрана</string>
+    <string name="settings_sim_hint">Выбор SIM появится вместе с отправкой SMS.</string>
+    <string name="settings_section_general">Общее</string>
+    <string name="settings_language">Язык приложения</string>
+    <string name="settings_language_system">Системный</string>
+    <string name="settings_language_ru">Русский</string>
+    <string name="settings_language_en">English</string>
+    <string name="settings_version">Версия %1$s</string>
+    <string name="settings_disclaimer">Приложение не является заменой официальным экстренным службам.</string>
+    <string name="settings_no_contacts">Сначала добавьте контакты на экране «Контакты».</string>
+    <string name="settings_diagnostics">Диагностика</string>
+    <string name="settings_diagnostics_hint">Инструменты прототипа, только debug-сборка</string>
+
+    <!-- Templates -->
+    <string name="sos_template_default">SOS! Мне нужна помощь.\nМои координаты: {latitude}, {longitude}\n{map_link}\nВремя: {time}</string>
+    <string name="plain_template_default">Я здесь: {latitude}, {longitude}\n{map_link}</string>
+    <string name="template_preview">Предпросмотр</string>
+    <string name="template_preview_empty">Сообщение пустое</string>
+    <string name="template_reset">Сбросить</string>
+    <string name="template_error_empty">Шаблон не может быть пустым</string>
+    <string name="template_sample_address">Москва, Тверская улица, 1</string>
+    <string name="template_sample_latitude">55.755800</string>
+    <string name="template_sample_longitude">37.617300</string>
+    <string name="template_sample_map_link">https://maps.google.com/?q=55.755800,37.617300</string>
+    <string name="template_sample_time">18.11.2026 17:45</string>
+
     <!-- Prototype screen -->
     <string name="prototype_title">ImHere — прототип виджета</string>
     <string name="prototype_subtitle">Проверочная сборка SOS-виджета. Двойное нажатие запускает фоновое получение геолокации. SMS в прототипе не отправляются.</string>

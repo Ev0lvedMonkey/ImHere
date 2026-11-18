@@ -77,6 +77,11 @@ class SosWidgetProvider : AppWidgetProvider() {
                 Log.i(TAG, "SOS is already running, ignoring tap")
                 WidgetRenderer.updateAll(context)
             }
+
+            WidgetStateStore.TapResult.COOLDOWN -> {
+                Log.i(TAG, "cooldown after a successful SOS, ignoring tap")
+                WidgetRenderer.updateAll(context)
+            }
         }
     }
 

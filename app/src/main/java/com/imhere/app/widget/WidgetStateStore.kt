@@ -5,7 +5,8 @@ import android.os.SystemClock
 
 /**
  * Persists the small piece of technical state needed by the widget double tap.
- * This is not user history: only the last tap timestamp and the busy flag.
+ * This is not user history: only the last tap timestamp, the busy flag and the
+ * cooldown deadline are stored, and only to guard the launch itself.
  */
 object WidgetStateStore {
 
@@ -13,11 +14,12 @@ object WidgetStateStore {
     private const val KEY_LAST_TAP = "last_tap_elapsed"
     private const val KEY_OPERATION_ACTIVE = "operation_active"
     private const val KEY_OPERATION_STARTED = "operation_started_elapsed"
+    private const val KEY_COOLDOWN_UNTIL = "cooldown_until_elapsed"
 
     const val DOUBLE_TAP_WINDOW_MS = 2_000L
     private const val STALE_OPERATION_MS = 3 * 60_000L
 
-    enum class TapResult { FIRST_TAP, START_SOS, BUSY }
+    enum class TapResult { FIRST_TAP, START_SOS, BUSY, COOLDOWN }
 
     @Synchronized
     fun onTap(context: Context): TapResult {
@@ -35,6 +37,14 @@ object WidgetStateStore {
                 .putBoolean(KEY_OPERATION_ACTIVE, false)
                 .putLong(KEY_LAST_TAP, 0L)
                 .commit()
+        }
+
+        // Right after a successful operation the widget ignores taps for a few
+        // seconds so an accidental extra tap cannot send a second message.
+        val cooldownUntil = prefs.getLong(KEY_COOLDOWN_UNTIL, 0L)
+        if (now < cooldownUntil) {
+            prefs.edit().putLong(KEY_LAST_TAP, 0L).commit()
+            return TapResult.COOLDOWN
         }
 
         val lastTap = prefs.getLong(KEY_LAST_TAP, 0L)
@@ -73,4 +83,20 @@ object WidgetStateStore {
     fun isOperationActive(context: Context): Boolean =
         context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
             .getBoolean(KEY_OPERATION_ACTIVE, false)
+
+    /** Blocks a new launch for [durationMs] after a successful operation. */
+    @Synchronized
+    fun startCooldown(context: Context, durationMs: Long) {
+        val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+        prefs.edit()
+            .putLong(KEY_COOLDOWN_UNTIL, SystemClock.elapsedRealtime() + durationMs)
+            .apply()
+    }
+
+    @Synchronized
+    fun isCoolingDown(context: Context): Boolean {
+        val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+        val until = prefs.getLong(KEY_COOLDOWN_UNTIL, 0L)
+        return SystemClock.elapsedRealtime() < until
+    }
 }

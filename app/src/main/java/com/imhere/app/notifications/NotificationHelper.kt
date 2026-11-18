@@ -1,15 +1,18 @@
 package com.imhere.app.notifications
 
+import android.Manifest
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Build
 import androidx.core.app.NotificationManagerCompat
+import androidx.core.content.ContextCompat
 import com.imhere.app.R
-import com.imhere.app.ui.PrototypeActivity
+import com.imhere.app.ui.MainActivity
 
 object NotificationHelper {
 
@@ -61,6 +64,15 @@ object NotificationHelper {
             .build()
 
     fun showResult(context: Context, title: String, text: String) {
+        // On Android 13+ posting is silently dropped without the runtime permission.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
+            ContextCompat.checkSelfPermission(
+                context,
+                Manifest.permission.POST_NOTIFICATIONS,
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            return
+        }
         val notification = Notification.Builder(context, CHANNEL_RESULT)
             .setSmallIcon(R.drawable.ic_notification)
             .setContentTitle(title)
@@ -74,7 +86,7 @@ object NotificationHelper {
     }
 
     private fun openAppIntent(context: Context): PendingIntent {
-        val intent = Intent(context, PrototypeActivity::class.java)
+        val intent = Intent(context, MainActivity::class.java)
             .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
         return PendingIntent.getActivity(
             context,
