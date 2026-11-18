@@ -80,6 +80,24 @@
             android:layout_marginTop="8dp"
             android:text="@string/prototype_run_test" />
 
+        <Button
+            android:id="@+id/btn_check_location"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/prototype_check_location" />
+
+        <TextView
+            android:id="@+id/tv_location_result"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:background="#FFF5F5F5"
+            android:padding="12dp"
+            android:textColor="#FF212121"
+            android:textSize="14sp"
+            android:visibility="gone" />
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

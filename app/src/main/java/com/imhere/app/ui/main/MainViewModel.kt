@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
-enum class LocationAvailability { AVAILABLE, DISABLED, NO_PERMISSION }
+enum class LocationAvailability { AVAILABLE, APPROXIMATE_ONLY, DISABLED, NO_PERMISSION }
 
 class MainViewModel(
     private val context: Context,
@@ -29,6 +29,7 @@ class MainViewModel(
         _location.value = when {
             !resolver.hasLocationPermission() -> LocationAvailability.NO_PERMISSION
             !resolver.isLocationEnabled() -> LocationAvailability.DISABLED
+            !resolver.hasFinePermission() -> LocationAvailability.APPROXIMATE_ONLY
             else -> LocationAvailability.AVAILABLE
         }
     }

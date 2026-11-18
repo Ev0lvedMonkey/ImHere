@@ -24,8 +24,11 @@
     <string name="main_location_disabled_hint">Включите службы геолокации, чтобы отправить координаты.</string>
     <string name="main_location_no_permission">Нет разрешения на геолокацию</string>
     <string name="main_location_no_permission_hint">Без разрешения приложение не сможет получить координаты.</string>
+    <string name="main_location_approximate">Разрешено только приблизительное местоположение</string>
+    <string name="main_location_approximate_hint">Для SOS нужна точность не хуже 100 м. Включите точное местоположение в настройках приложения.</string>
     <string name="main_grant_permissions">Выдать</string>
     <string name="main_open_location_settings">Открыть</string>
+    <string name="main_open_app_settings">Настройки</string>
     <string name="main_disclaimer">Приложение не является заменой официальным экстренным службам.</string>
 
     <!-- Contacts -->
@@ -84,22 +87,28 @@
     <string name="template_sample_address">Москва, Тверская улица, 1</string>
     <string name="template_sample_latitude">55.755800</string>
     <string name="template_sample_longitude">37.617300</string>
-    <string name="template_sample_map_link">https://maps.google.com/?q=55.755800,37.617300</string>
+    <string name="template_sample_map_link">https://www.google.com/maps/search/?api=1&amp;query=55.755800,37.617300</string>
     <string name="template_sample_time">18.11.2026 17:45</string>
 
     <!-- Prototype screen -->
     <string name="prototype_title">ImHere — прототип виджета</string>
     <string name="prototype_subtitle">Проверочная сборка SOS-виджета. Двойное нажатие запускает фоновое получение геолокации. SMS в прототипе не отправляются.</string>
     <string name="prototype_instructions">1. Выдайте разрешения.\n2. Добавьте виджет ImHere на рабочий стол (долгое нажатие на рабочем столе → Виджеты).\n3. Нажмите на виджет один раз, затем второй раз в течение 2 секунд.\n4. Смотрите уведомление и лог с тегом ImHerePrototype.</string>
-    <string name="prototype_permissions_status">Разрешение на геолокацию: %1$s\nРазрешение на уведомления: %2$s\nСлужбы геолокации: %3$s\nСервисы Google Play: %4$s</string>
+    <string name="prototype_permissions_status">Разрешение на геолокацию: %1$s\nТочное местоположение: %2$s\nРазрешение на уведомления: %3$s\nСлужбы геолокации: %4$s\nСервисы Google Play: %5$s</string>
     <string name="prototype_status_granted">выдано</string>
     <string name="prototype_status_denied">не выдано</string>
+    <string name="prototype_status_approximate">только приблизительное</string>
     <string name="prototype_status_enabled">включены</string>
     <string name="prototype_status_disabled">выключены</string>
     <string name="prototype_status_available">доступны</string>
     <string name="prototype_status_unavailable">недоступны</string>
     <string name="prototype_grant_permissions">Выдать разрешения</string>
     <string name="prototype_run_test">Запустить SOS-пайплайн без виджета</string>
+    <string name="prototype_check_location">Получить геолокацию без SOS</string>
+    <string name="prototype_location_running">Получение геолокации…</string>
+    <string name="prototype_location_success">Широта: %1$.6f\nДолгота: %2$.6f\nТочность: ±%3$.0f м\nВозраст: %4$d с\nИсточник: %5$s\nАдрес: %6$s\nСсылка: %7$s</string>
+    <string name="prototype_location_failure">Подходящая геолокация не получена:\n%1$s</string>
+    <string name="prototype_location_no_address">не определён</string>
     <string name="prototype_debug_inexact">Режим прототипа: принимать неточную геолокацию</string>
     <string name="prototype_debug_delay">Режим прототипа: задержать операцию на 10 с (проверка блокировки повторного запуска)</string>
     <string name="prototype_permission_denied_hint">Разрешение отклонено навсегда. Включите его вручную в настройках системы.</string>
@@ -114,8 +123,10 @@
     <string name="notif_locating">Получение геолокации…</string>
     <string name="notif_success_title">Геолокация получена</string>
     <string name="notif_success_text">%1$.5f, %2$.5f (±%3$.0f м)\nВозраст: %4$d с\nИсточник: %5$s</string>
+    <string name="notif_success_address">Адрес: %1$s</string>
     <string name="notif_failure_title">SOS не выполнен</string>
     <string name="notif_failure_permission">Нет разрешения на геолокацию.</string>
+    <string name="notif_failure_fine_denied">Нет доступа к точному местоположению. Включите точное местоположение в настройках приложения.</string>
     <string name="notif_failure_disabled">Службы геолокации отключены.</string>
     <string name="notif_failure_no_fix">За 20 секунд не удалось получить координаты.</string>
     <string name="notif_failure_timeout">Истекло время ожидания геолокации.</string>

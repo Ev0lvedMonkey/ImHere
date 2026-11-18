@@ -65,4 +65,6 @@ dependencies {
 
     implementation("com.google.android.gms:play-services-location:21.4.0")
     implementation("com.googlecode.libphonenumber:libphonenumber:9.0.43")
+
+    testImplementation("junit:junit:4.13.2")
 }

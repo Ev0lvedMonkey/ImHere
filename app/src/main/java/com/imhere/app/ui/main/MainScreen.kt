@@ -2,6 +2,7 @@ package com.imhere.app.ui.main
 
 import android.Manifest
 import android.content.Intent
+import android.net.Uri
 import android.os.Build
 import android.provider.Settings
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -110,6 +111,14 @@ fun MainScreen(
                 onOpenSystemSettings = {
                     context.startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
                 },
+                onOpenAppSettings = {
+                    context.startActivity(
+                        Intent(
+                            Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+                            Uri.fromParts("package", context.packageName, null),
+                        ),
+                    )
+                },
             )
 
             Button(
@@ -187,6 +196,7 @@ private fun LocationStatusCard(
     availability: LocationAvailability,
     onGrantPermissions: () -> Unit,
     onOpenSystemSettings: () -> Unit,
+    onOpenAppSettings: () -> Unit,
 ) {
     val icon = Icons.Filled.Place
     val title: String
@@ -202,6 +212,11 @@ private fun LocationStatusCard(
             supporting = stringResource(R.string.main_location_disabled_hint)
         }
 
+        LocationAvailability.APPROXIMATE_ONLY -> {
+            title = stringResource(R.string.main_location_approximate)
+            supporting = stringResource(R.string.main_location_approximate_hint)
+        }
+
         LocationAvailability.NO_PERMISSION -> {
             title = stringResource(R.string.main_location_no_permission)
             supporting = stringResource(R.string.main_location_no_permission_hint)
@@ -212,7 +227,7 @@ private fun LocationStatusCard(
         modifier = Modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(
             containerColor = if (availability == LocationAvailability.AVAILABLE) {
-                MaterialTheme.colorScheme.surfaceVariant
+                MaterialTheme.colorScheme.surfaceContainerHighest
             } else {
                 MaterialTheme.colorScheme.errorContainer
             },
@@ -245,6 +260,10 @@ private fun LocationStatusCard(
 
                 LocationAvailability.DISABLED -> TextButton(onClick = onOpenSystemSettings) {
                     Text(stringResource(R.string.main_open_location_settings))
+                }
+
+                LocationAvailability.APPROXIMATE_ONLY -> TextButton(onClick = onOpenAppSettings) {
+                    Text(stringResource(R.string.main_open_app_settings))
                 }
 
                 LocationAvailability.AVAILABLE -> Unit

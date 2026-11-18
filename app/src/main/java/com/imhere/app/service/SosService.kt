@@ -11,11 +11,13 @@ import android.util.Log
 import androidx.core.app.ServiceCompat
 import androidx.core.content.ContextCompat
 import com.imhere.app.R
-import com.imhere.app.location.LocationFailure
+import com.imhere.app.location.AddressResolver
 import com.imhere.app.location.LocationOutcome
 import com.imhere.app.location.LocationResolver
 import com.imhere.app.notifications.NotificationHelper
 import com.imhere.app.ui.PrototypeSettings
+import com.imhere.app.ui.toUserMessage
+import com.imhere.app.util.MapLinks
 import com.imhere.app.widget.WidgetRenderer
 import com.imhere.app.widget.WidgetStateStore
 import kotlinx.coroutines.CancellationException
@@ -26,6 +28,7 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlinx.coroutines.withTimeoutOrNull
 import java.util.concurrent.atomic.AtomicBoolean
 
 /**
@@ -108,14 +111,34 @@ class SosService : Service() {
                     is LocationOutcome.Success -> {
                         val fix = outcome.fix
                         Log.i(TAG, "SOS location success: $fix")
-                        val text = getString(
-                            R.string.notif_success_text,
-                            fix.latitude,
-                            fix.longitude,
-                            fix.accuracyMeters,
-                            fix.ageMillis / 1_000L,
-                            fix.provider,
-                        ) + suffix
+                        val address = withTimeoutOrNull(ADDRESS_TIMEOUT_MS) {
+                            AddressResolver(this@SosService).resolve(
+                                fix.latitude,
+                                fix.longitude,
+                            )
+                        }
+                        Log.i(TAG, "SOS address: ${address ?: "not available"}")
+                        val mapLink = MapLinks.forCoordinates(fix.latitude, fix.longitude)
+                        Log.i(TAG, "SOS map link: $mapLink")
+                        val text = buildString {
+                            append(
+                                getString(
+                                    R.string.notif_success_text,
+                                    fix.latitude,
+                                    fix.longitude,
+                                    fix.accuracyMeters,
+                                    fix.ageMillis / 1_000L,
+                                    fix.provider,
+                                ),
+                            )
+                            if (address != null) {
+                                append('\n')
+                                append(getString(R.string.notif_success_address, address))
+                            }
+                            append('\n')
+                            append(mapLink)
+                            append(suffix)
+                        }
                         NotificationHelper.showResult(
                             this@SosService,
                             getString(R.string.notif_success_title),
@@ -127,7 +150,7 @@ class SosService : Service() {
 
                     is LocationOutcome.Failure -> {
                         Log.w(TAG, "SOS location failure: ${outcome.reason}")
-                        val text = failureText(outcome.reason) + suffix
+                        val text = outcome.reason.toUserMessage(this@SosService) + suffix
                         NotificationHelper.showResult(
                             this@SosService,
                             getString(R.string.notif_failure_title),
@@ -208,22 +231,14 @@ class SosService : Service() {
         wakeLock = null
     }
 
-    private fun failureText(reason: LocationFailure): String = when (reason) {
-        LocationFailure.PermissionDenied -> getString(R.string.notif_failure_permission)
-        LocationFailure.LocationDisabled -> getString(R.string.notif_failure_disabled)
-        LocationFailure.Timeout -> getString(R.string.notif_failure_timeout)
-        LocationFailure.NoFix -> getString(R.string.notif_failure_no_fix)
-        LocationFailure.Stale -> getString(R.string.notif_failure_stale)
-        is LocationFailure.LowAccuracy -> reason.bestAccuracyMeters?.let { accuracy ->
-            getString(R.string.notif_failure_low_accuracy, accuracy)
-        } ?: getString(R.string.notif_failure_low_accuracy_unknown)
-    }
-
     companion object {
         private const val TAG = "ImHerePrototype"
         private const val ACTION_START_SOS = "com.imhere.app.action.START_SOS"
         private const val EXTRA_SOURCE = "source"
         private const val WAKE_LOCK_TIMEOUT_MS = 2 * 60_000L
+
+        /** Reverse geocoding is optional and must not hold the flow for long. */
+        private const val ADDRESS_TIMEOUT_MS = 2_000L
 
         /** Extra taps right after a successful operation are ignored. */
         private const val SOS_COOLDOWN_MS = 5_000L

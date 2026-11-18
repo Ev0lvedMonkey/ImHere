@@ -24,8 +24,11 @@
     <string name="main_location_disabled_hint">Turn on location services to send coordinates.</string>
     <string name="main_location_no_permission">Location permission is missing</string>
     <string name="main_location_no_permission_hint">Without permission the app cannot get your coordinates.</string>
+    <string name="main_location_approximate">Only approximate location is allowed</string>
+    <string name="main_location_approximate_hint">SOS needs an accuracy of 100 m or better. Allow precise location in the app settings.</string>
     <string name="main_grant_permissions">Grant</string>
     <string name="main_open_location_settings">Open</string>
+    <string name="main_open_app_settings">Settings</string>
     <string name="main_disclaimer">The app is not a replacement for official emergency services.</string>
 
     <!-- Contacts -->
@@ -84,22 +87,28 @@
     <string name="template_sample_address">Moscow, Tverskaya Street, 1</string>
     <string name="template_sample_latitude">55.755800</string>
     <string name="template_sample_longitude">37.617300</string>
-    <string name="template_sample_map_link">https://maps.google.com/?q=55.755800,37.617300</string>
+    <string name="template_sample_map_link">https://www.google.com/maps/search/?api=1&amp;query=55.755800,37.617300</string>
     <string name="template_sample_time">18.11.2026 17:45</string>
 
     <!-- Prototype screen -->
     <string name="prototype_title">ImHere — widget prototype</string>
     <string name="prototype_subtitle">Verification build for the SOS widget. Double tap the widget to start a foreground location request. No SMS is sent in the prototype.</string>
     <string name="prototype_instructions">1. Grant permissions.\n2. Add the ImHere widget to the home screen (long press on the home screen → Widgets).\n3. Tap the widget once, then a second time within 2 seconds.\n4. Watch the notification and the Logcat tag ImHerePrototype.</string>
-    <string name="prototype_permissions_status">Location permission: %1$s\nNotification permission: %2$s\nLocation services: %3$s\nGoogle Play services: %4$s</string>
+    <string name="prototype_permissions_status">Location permission: %1$s\nPrecise location: %2$s\nNotification permission: %3$s\nLocation services: %4$s\nGoogle Play services: %5$s</string>
     <string name="prototype_status_granted">granted</string>
     <string name="prototype_status_denied">not granted</string>
+    <string name="prototype_status_approximate">approximate only</string>
     <string name="prototype_status_enabled">enabled</string>
     <string name="prototype_status_disabled">disabled</string>
     <string name="prototype_status_available">available</string>
     <string name="prototype_status_unavailable">not available</string>
     <string name="prototype_grant_permissions">Grant permissions</string>
     <string name="prototype_run_test">Run SOS pipeline without widget</string>
+    <string name="prototype_check_location">Get a location fix (no SOS)</string>
+    <string name="prototype_location_running">Requesting a location fix…</string>
+    <string name="prototype_location_success">Latitude: %1$.6f\nLongitude: %2$.6f\nAccuracy: ±%3$.0f m\nAge: %4$d s\nSource: %5$s\nAddress: %6$s\nLink: %7$s</string>
+    <string name="prototype_location_failure">No suitable fix:\n%1$s</string>
+    <string name="prototype_location_no_address">not available</string>
     <string name="prototype_debug_inexact">Prototype mode: accept low-accuracy location</string>
     <string name="prototype_debug_delay">Prototype mode: hold the operation for 10 s (checks the repeated-tap lock)</string>
     <string name="prototype_permission_denied_hint">Permission denied permanently. Open the system settings to enable it manually.</string>
@@ -114,8 +123,10 @@
     <string name="notif_locating">Getting your location…</string>
     <string name="notif_success_title">Location received</string>
     <string name="notif_success_text">%1$.5f, %2$.5f (±%3$.0f m)\nAge: %4$d s\nSource: %5$s</string>
+    <string name="notif_success_address">Address: %1$s</string>
     <string name="notif_failure_title">SOS failed</string>
     <string name="notif_failure_permission">Location permission is not granted.</string>
+    <string name="notif_failure_fine_denied">Precise location access is not granted. Allow precise location in the app settings.</string>
     <string name="notif_failure_disabled">Location services are disabled.</string>
     <string name="notif_failure_no_fix">No location fix was received in 20 seconds.</string>
     <string name="notif_failure_timeout">Location request timed out.</string>
