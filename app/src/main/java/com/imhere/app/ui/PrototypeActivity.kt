@@ -40,10 +40,16 @@ class PrototypeActivity : ComponentActivity() {
         val grantButton = findViewById<Button>(R.id.btn_grant)
         val testButton = findViewById<Button>(R.id.btn_test)
         val debugCheckBox = findViewById<CheckBox>(R.id.cb_debug_inexact)
+        val delayCheckBox = findViewById<CheckBox>(R.id.cb_debug_delay)
 
         debugCheckBox.isChecked = PrototypeSettings.acceptInexactLocation(this)
         debugCheckBox.setOnCheckedChangeListener { _, checked ->
             PrototypeSettings.setAcceptInexactLocation(this, checked)
+        }
+
+        delayCheckBox.isChecked = PrototypeSettings.artificialDelayMillis(this) > 0L
+        delayCheckBox.setOnCheckedChangeListener { _, checked ->
+            PrototypeSettings.setArtificialDelay(this, checked)
         }
 
         grantButton.setOnClickListener { requestPermissions() }
@@ -80,6 +86,7 @@ class PrototypeActivity : ComponentActivity() {
     }
 
     private fun requestPermissions() {
+        PrototypeSettings.setPermissionsRequested(this, true)
         val permissions = buildList {
             add(Manifest.permission.ACCESS_FINE_LOCATION)
             add(Manifest.permission.ACCESS_COARSE_LOCATION)
@@ -128,7 +135,9 @@ class PrototypeActivity : ComponentActivity() {
 
         val showSettings = !locationGranted
         openSettingsButton.isVisible = showSettings
-        deniedHint.isVisible = showSettings
+        deniedHint.isVisible = showSettings &&
+            PrototypeSettings.permissionsRequested(this) &&
+            !shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION)
     }
 
     private fun isGranted(permission: String): Boolean =

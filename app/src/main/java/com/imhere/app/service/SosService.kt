@@ -23,6 +23,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.concurrent.atomic.AtomicBoolean
@@ -94,6 +95,11 @@ class SosService : Service() {
             var shown = false
             try {
                 val acceptInexact = PrototypeSettings.acceptInexactLocation(this@SosService)
+                val artificialDelay = PrototypeSettings.artificialDelayMillis(this@SosService)
+                if (artificialDelay > 0L) {
+                    Log.i(TAG, "prototype: holding the operation for ${artificialDelay}ms")
+                    delay(artificialDelay)
+                }
                 val outcome = resolver.resolve(acceptInexact)
                 val suffix = if (acceptInexact) getString(R.string.notif_debug_suffix) else ""
 

@@ -67,6 +67,12 @@
             android:layout_marginTop="8dp"
             android:text="@string/prototype_debug_inexact" />
 
+        <CheckBox
+            android:id="@+id/cb_debug_delay"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/prototype_debug_delay" />
+
         <Button
             android:id="@+id/btn_test"
             android:layout_width="match_parent"
