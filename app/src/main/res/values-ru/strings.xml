@@ -50,7 +50,6 @@
     <string name="contact_error_duplicate">Контакт с таким номером уже есть</string>
     <string name="contact_import_failed">Не удалось прочитать выбранный контакт</string>
     <string name="contact_import_denied">Без доступа к контактам выбрать номер нельзя. Добавьте контакт вручную.</string>
-    <string name="contact_import_permission_text">Доступ к контактам запрашивается только чтобы скопировать выбранный номер.</string>
 
     <!-- Settings -->
     <string name="settings_title">Настройки</string>

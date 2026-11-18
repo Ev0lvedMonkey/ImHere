@@ -1,7 +1,6 @@
 package com.imhere.app.ui.contacts
 
 import android.Manifest
-import android.content.pm.PackageManager
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -38,6 +37,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -49,7 +49,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.imhere.app.AppGraph
@@ -80,10 +79,10 @@ fun ContactsScreen(
 
     var draft by remember { mutableStateOf<ContactDraft?>(null) }
     var deleteTarget by remember { mutableStateOf<Contact?>(null) }
+    var pendingRead by remember { mutableStateOf<Uri?>(null) }
 
     val importFailed = stringResource(R.string.contact_import_failed)
     val importDenied = stringResource(R.string.contact_import_denied)
-    val permissionRequested = stringResource(R.string.contact_import_permission_text)
     val duplicateError = stringResource(R.string.contact_error_duplicate)
     val nameError = stringResource(R.string.contact_error_name_empty)
     val phoneError = stringResource(R.string.contact_error_phone_invalid)
@@ -91,18 +90,21 @@ fun ContactsScreen(
 
     fun openImported(uri: Uri) {
         scope.launch {
-            val picked = withContext(Dispatchers.IO) { ContactReader.read(context, uri) }
-            if (picked == null) {
-                snackbarHostState.showSnackbar(importFailed)
-                return@launch
+            when (val result = withContext(Dispatchers.IO) { ContactReader.read(context, uri) }) {
+                is ContactReader.ReadResult.Success -> {
+                    val picked = result.picked
+                    val normalized = AppGraph.phoneNumbers.normalize(picked.phone)
+                    draft = ContactDraft(
+                        id = null,
+                        name = picked.name,
+                        phone = normalized ?: picked.phone,
+                        isSos = false,
+                    )
+                }
+
+                ContactReader.ReadResult.PermissionDenied -> pendingRead = uri
+                ContactReader.ReadResult.Unavailable -> snackbarHostState.showSnackbar(importFailed)
             }
-            val normalized = AppGraph.phoneNumbers.normalize(picked.phone)
-            draft = ContactDraft(
-                id = null,
-                name = picked.name,
-                phone = normalized ?: picked.phone,
-                isSos = false,
-            )
         }
     }
 
@@ -113,24 +115,25 @@ fun ContactsScreen(
     val permissionLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestPermission(),
     ) { granted ->
-        if (granted) {
-            picker.launch(null)
-        } else {
+        val uri = pendingRead
+        pendingRead = null
+        if (granted && uri != null) {
+            openImported(uri)
+        } else if (!granted) {
             scope.launch { snackbarHostState.showSnackbar(importDenied) }
         }
     }
 
-    fun startImport() {
-        val granted = ContextCompat.checkSelfPermission(
-            context,
-            Manifest.permission.READ_CONTACTS,
-        ) == PackageManager.PERMISSION_GRANTED
-        if (granted) {
-            picker.launch(null)
-        } else {
-            scope.launch { snackbarHostState.showSnackbar(permissionRequested) }
+    // The permission is requested only after the system picker returned a contact
+    // that the provider refused to hand over without READ_CONTACTS.
+    LaunchedEffect(pendingRead) {
+        if (pendingRead != null) {
             permissionLauncher.launch(Manifest.permission.READ_CONTACTS)
         }
+    }
+
+    fun startImport() {
+        picker.launch(null)
     }
 
     Scaffold(

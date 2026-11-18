@@ -7,17 +7,35 @@ import android.provider.ContactsContract
 
 /**
  * Reads a name and a phone number for a contact URI returned by the system
- * contact picker. The caller must hold READ_CONTACTS: the picker returns a
- * content URI without a read grant.
+ * contact picker.
+ *
+ * The picker itself never needs a permission. On most devices the provider also
+ * lets the caller read the single picked contact, so no permission prompt is
+ * shown at all. If the platform denies the read, [ReadResult.PermissionDenied]
+ * tells the caller that READ_CONTACTS is the only way to get the number.
  */
 object ContactReader {
 
     data class Picked(val name: String, val phone: String)
 
-    fun read(context: Context, uri: Uri): Picked? = runCatching {
-        val contactId = uri.lastPathSegment ?: return null
-        readByContactId(context.contentResolver, contactId)
-    }.getOrNull()
+    sealed interface ReadResult {
+        data class Success(val picked: Picked) : ReadResult
+        data object PermissionDenied : ReadResult
+        data object Unavailable : ReadResult
+    }
+
+    fun read(context: Context, uri: Uri): ReadResult {
+        return try {
+            val contactId = uri.lastPathSegment ?: return ReadResult.Unavailable
+            readByContactId(context.contentResolver, contactId)
+                ?.let { ReadResult.Success(it) }
+                ?: ReadResult.Unavailable
+        } catch (exception: SecurityException) {
+            ReadResult.PermissionDenied
+        } catch (exception: Exception) {
+            ReadResult.Unavailable
+        }
+    }
 
     private fun readByContactId(resolver: ContentResolver, contactId: String): Picked? {
         val projection = arrayOf(

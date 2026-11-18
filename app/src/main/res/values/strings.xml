@@ -50,7 +50,6 @@
     <string name="contact_error_duplicate">A contact with this number already exists</string>
     <string name="contact_import_failed">Could not read the selected contact</string>
     <string name="contact_import_denied">Without contacts access the number cannot be picked. Add the contact manually.</string>
-    <string name="contact_import_permission_text">Contacts access is requested only to copy the selected number.</string>
 
     <!-- Settings -->
     <string name="settings_title">Settings</string>
