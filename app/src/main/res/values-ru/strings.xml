@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">ImHere</string>
+
+    <!-- Prototype screen -->
+    <string name="prototype_title">ImHere — прототип виджета</string>
+    <string name="prototype_subtitle">Проверочная сборка SOS-виджета. Двойное нажатие запускает фоновое получение геолокации. SMS в прототипе не отправляются.</string>
+    <string name="prototype_instructions">1. Выдайте разрешения.\n2. Добавьте виджет ImHere на рабочий стол (долгое нажатие на рабочем столе → Виджеты).\n3. Нажмите на виджет один раз, затем второй раз в течение 2 секунд.\n4. Смотрите уведомление и лог с тегом ImHerePrototype.</string>
+    <string name="prototype_permissions_status">Разрешение на геолокацию: %1$s\nРазрешение на уведомления: %2$s\nСлужбы геолокации: %3$s\nСервисы Google Play: %4$s</string>
+    <string name="prototype_status_granted">выдано</string>
+    <string name="prototype_status_denied">не выдано</string>
+    <string name="prototype_status_enabled">включены</string>
+    <string name="prototype_status_disabled">выключены</string>
+    <string name="prototype_status_available">доступны</string>
+    <string name="prototype_status_unavailable">недоступны</string>
+    <string name="prototype_grant_permissions">Выдать разрешения</string>
+    <string name="prototype_run_test">Запустить SOS-пайплайн без виджета</string>
+    <string name="prototype_debug_inexact">Режим прототипа: принимать неточную геолокацию</string>
+    <string name="prototype_permission_denied_hint">Разрешение отклонено навсегда. Включите его вручную в настройках системы.</string>
+    <string name="prototype_open_settings">Открыть настройки приложения</string>
+
+    <!-- Notifications -->
+    <string name="notif_channel_progress_name">Ход SOS</string>
+    <string name="notif_channel_progress_description">Показывается во время выполнения SOS-операции.</string>
+    <string name="notif_channel_result_name">Результат SOS</string>
+    <string name="notif_channel_result_description">Показывается по завершении или при ошибке SOS-операции.</string>
+    <string name="notif_progress_title">ImHere SOS</string>
+    <string name="notif_locating">Получение геолокации…</string>
+    <string name="notif_success_title">Геолокация получена</string>
+    <string name="notif_success_text">%1$.5f, %2$.5f (±%3$.0f м)\nВозраст: %4$d с\nИсточник: %5$s</string>
+    <string name="notif_failure_title">SOS не выполнен</string>
+    <string name="notif_failure_permission">Нет разрешения на геолокацию.</string>
+    <string name="notif_failure_disabled">Службы геолокации отключены.</string>
+    <string name="notif_failure_no_fix">За 20 секунд не удалось получить координаты.</string>
+    <string name="notif_failure_timeout">Истекло время ожидания геолокации.</string>
+    <string name="notif_failure_low_accuracy">Недостаточная точность: ±%1$.0f м (допустимо не более 100 м).</string>
+    <string name="notif_failure_low_accuracy_unknown">Точность неизвестна или недостаточна (допустимо не более 100 м).</string>
+    <string name="notif_failure_stale">Последняя известная позиция старше 30 секунд.</string>
+    <string name="notif_failure_unknown">Не удалось получить подходящую геолокацию.</string>
+    <string name="notif_already_running">SOS уже выполняется.</string>
+    <string name="notif_start_failed">Не удалось запустить фоновую SOS-службу.</string>
+    <string name="notif_debug_suffix"> (режим прототипа, точность не проверяется)</string>
+    <string name="notif_action_open_app">Открыть приложение</string>
+    <string name="notif_action_settings">Настройки приложения</string>
+
+    <!-- Widget -->
+    <string name="widget_title">SOS</string>
+    <string name="widget_subtitle_idle">Двойное нажатие</string>
+    <string name="widget_subtitle_waiting">Нажмите ещё раз</string>
+    <string name="widget_subtitle_busy">Выполняется…</string>
+    <string name="widget_subtitle_error">Ошибка</string>
+    <string name="widget_description">SOS-виджет: двойное нажатие запускает получение геолокации и экстренную операцию.</string>
+    <string name="widget_content_description_idle">SOS. Нажмите дважды, чтобы запустить.</string>
+    <string name="widget_content_description_waiting">SOS ожидает второе нажатие. Нажмите ещё раз.</string>
+    <string name="widget_content_description_busy">SOS-операция выполняется.</string>
+</resources>

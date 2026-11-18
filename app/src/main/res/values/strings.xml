@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">ImHere</string>
+
+    <!-- Prototype screen -->
+    <string name="prototype_title">ImHere — widget prototype</string>
+    <string name="prototype_subtitle">Verification build for the SOS widget. Double tap the widget to start a foreground location request. No SMS is sent in the prototype.</string>
+    <string name="prototype_instructions">1. Grant permissions.\n2. Add the ImHere widget to the home screen (long press on the home screen → Widgets).\n3. Tap the widget once, then a second time within 2 seconds.\n4. Watch the notification and the Logcat tag ImHerePrototype.</string>
+    <string name="prototype_permissions_status">Location permission: %1$s\nNotification permission: %2$s\nLocation services: %3$s\nGoogle Play services: %4$s</string>
+    <string name="prototype_status_granted">granted</string>
+    <string name="prototype_status_denied">not granted</string>
+    <string name="prototype_status_enabled">enabled</string>
+    <string name="prototype_status_disabled">disabled</string>
+    <string name="prototype_status_available">available</string>
+    <string name="prototype_status_unavailable">not available</string>
+    <string name="prototype_grant_permissions">Grant permissions</string>
+    <string name="prototype_run_test">Run SOS pipeline without widget</string>
+    <string name="prototype_debug_inexact">Prototype mode: accept low-accuracy location</string>
+    <string name="prototype_permission_denied_hint">Permission denied permanently. Open the system settings to enable it manually.</string>
+    <string name="prototype_open_settings">Open app settings</string>
+
+    <!-- Notifications -->
+    <string name="notif_channel_progress_name">SOS progress</string>
+    <string name="notif_channel_progress_description">Shown while the SOS operation is running.</string>
+    <string name="notif_channel_result_name">SOS result</string>
+    <string name="notif_channel_result_description">Shown when the SOS operation finishes or fails.</string>
+    <string name="notif_progress_title">ImHere SOS</string>
+    <string name="notif_locating">Getting your location…</string>
+    <string name="notif_success_title">Location received</string>
+    <string name="notif_success_text">%1$.5f, %2$.5f (±%3$.0f m)\nAge: %4$d s\nSource: %5$s</string>
+    <string name="notif_failure_title">SOS failed</string>
+    <string name="notif_failure_permission">Location permission is not granted.</string>
+    <string name="notif_failure_disabled">Location services are disabled.</string>
+    <string name="notif_failure_no_fix">No location fix was received in 20 seconds.</string>
+    <string name="notif_failure_timeout">Location request timed out.</string>
+    <string name="notif_failure_low_accuracy">Location accuracy is too low: ±%1$.0f m (limit 100 m).</string>
+    <string name="notif_failure_low_accuracy_unknown">Location accuracy is unknown or too low (limit 100 m).</string>
+    <string name="notif_failure_stale">The last known location is older than 30 seconds.</string>
+    <string name="notif_failure_unknown">Could not get a suitable location.</string>
+    <string name="notif_already_running">SOS is already running.</string>
+    <string name="notif_start_failed">Could not start the background SOS service.</string>
+    <string name="notif_debug_suffix"> (prototype mode, accuracy unchecked)</string>
+    <string name="notif_action_open_app">Open app</string>
+    <string name="notif_action_settings">App settings</string>
+
+    <!-- Widget -->
+    <string name="widget_title">SOS</string>
+    <string name="widget_subtitle_idle">Double tap</string>
+    <string name="widget_subtitle_waiting">Tap again</string>
+    <string name="widget_subtitle_busy">Working…</string>
+    <string name="widget_subtitle_error">Error</string>
+    <string name="widget_description">SOS widget: double tap to get your location and start the emergency operation.</string>
+    <string name="widget_content_description_idle">SOS. Double tap to start.</string>
+    <string name="widget_content_description_waiting">SOS is waiting for the second tap. Tap again now.</string>
+    <string name="widget_content_description_busy">SOS operation is running.</string>
+</resources>

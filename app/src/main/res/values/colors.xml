@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="widget_background_idle">#B3261E</color>
+    <color name="widget_background_waiting">#E8710A</color>
+    <color name="widget_background_busy">#424242</color>
+    <color name="widget_background_error">#5C6BC0</color>
+    <color name="widget_text">#FFFFFFFF</color>
+    <color name="ic_launcher_background">#FFB3261E</color>
+</resources>
