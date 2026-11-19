@@ -1,132 +1,72 @@
 # ImHere
 
-ImHere — Android-приложение для быстрой отправки своего местоположения близким по SMS.
-Работает без регистрации, без сервера и без интернета: координаты определяются на
-устройстве и передаются только выбранным получателям через обычные SMS.
+ImHere is an Android app for quickly sharing your location with a few trusted
+contacts via SMS. It needs no account, server, or internet connection: coordinates
+are resolved on the device and sent only to the recipients you choose.
 
-Главный сценарий — SOS через виджет на домашнем экране: два нажатия, и приложение
-самостоятельно получает свежую геолокацию и отправляет SMS, не открывая интерфейс.
+The main scenario is the home-screen SOS widget: tap it twice and ImHere obtains
+a fresh location fix and sends the SMS without opening the app.
 
-## Возможности
+## Download
 
-- Большая кнопка SOS на главном экране.
-- Кнопка «Отправить геолокацию» с отдельным шаблоном сообщения.
-- SOS-виджет с защитой от случайного нажатия (двойное нажатие в течение 2 секунд).
-- Отправка отдельного SMS каждому получателю; ошибка одного получателя не прерывает остальные.
-- Выбор SIM-карты; приложение никогда не переключается на другую SIM автоматически.
-- Статусы «отправлено оператору» и «доставлено» разделены.
-- Шаблоны сообщений с переменными `{address}`, `{latitude}`, `{longitude}`, `{map_link}`, `{time}`.
-- Локальное хранение контактов, шаблонов и выбора SIM. Истории SOS и геолокации нет.
-- Русский и английский интерфейс.
+[Download the latest release](https://github.com/Ev0lvedMonkey/ImHere/releases/latest).
 
-## Требования
+Requires Android 8.0 (API 26) or newer, an active SIM card, and location services.
 
-- Android 8.0 (API 26) или новее.
-- Устройство с SIM-картой и поддержкой SMS.
-- Включённые службы геолокации.
-- Для определения адреса желателен интернет, но он не обязателен: без адреса сообщение
-  всё равно содержит координаты и ссылку на карту.
+## Features
 
-## Сборка
+- Large SOS button and a separate "Send my location" action with its own template.
+- SOS widget with accidental-tap protection: the second tap must follow within 2 seconds.
+- One SMS per recipient; a failure for one contact does not stop the others.
+- "Sent to the operator" and "delivered" are reported separately.
+- SIM selection; the app never switches SIMs automatically.
+- Templates with `{address}`, `{latitude}`, `{longitude}`, `{map_link}`, and `{time}`.
+- Contacts, templates, and SIM choice stay on the device; no SOS or location history.
+- Russian and English UI.
+
+## How it works
+
+Before sending, ImHere checks permissions, SOS contacts, and the selected SIM.
+It requests a fresh location fix for up to 20 seconds and accepts only a fix that
+is at most 30 seconds old with accuracy of 100 m or better. If no suitable fix is
+available, no SMS is sent. Reverse geocoding is optional and limited to 2 seconds.
+Each recipient receives a separate SMS, and the result notification shows the
+status per recipient. Delivery reports depend on the carrier and are best effort.
+
+## Permissions
+
+| Permission | Purpose |
+| --- | --- |
+| `ACCESS_FINE_LOCATION`, `ACCESS_COARSE_LOCATION` | Location for the message. |
+| `SEND_SMS` | Send SMS without opening the system messaging app. |
+| `READ_PHONE_STATE` | List active SIMs and select the sending SIM. |
+| `READ_CONTACTS` | Optional; used only when picking a recipient from system contacts. |
+| `POST_NOTIFICATIONS` | Progress and result notifications (Android 13+). |
+| `FOREGROUND_SERVICE`, `FOREGROUND_SERVICE_LOCATION`, `WAKE_LOCK` | Finish the operation while the screen is off. |
+
+The app does **not** request background location, internet access, or SMS history,
+and contains no analytics or advertising SDKs.
+
+## Build
 
 ```powershell
-$env:JAVA_HOME='C:\Users\<user>\AppData\Local\Programs\jdk21'
 .\gradlew.bat :app:assembleDebug
 .\gradlew.bat :app:testDebugUnitTest
 .\gradlew.bat :app:lintDebug
 ```
 
-Debug APK: `app\build\outputs\apk\debug\app-debug.apk`.
+The debug APK is written to `app\build\outputs\apk\debug\app-debug.apk`.
+Release builds are signed with a local keystore configured in `keystore.properties`,
+which is not tracked by Git.
 
-Release-сборка описана в разделе «Подпись release».
+## Privacy
 
-## Разрешения
+- Contacts, templates, and the selected SIM are stored on the device only.
+- Location is never sent to a third-party server.
+- No SOS or movement history is stored.
+- The widget's double-tap state is kept in `SharedPreferences` and is not history.
 
-| Разрешение | Зачем |
-|---|---|
-| `ACCESS_FINE_LOCATION` | Точные координаты для сообщения. |
-| `ACCESS_COARSE_LOCATION` | Работа с приблизительной геолокацией и запрос точности. |
-| `SEND_SMS` | Отправка SMS без открытия системного приложения. |
-| `READ_PHONE_STATE` | Список активных SIM и выбор SIM для отправки. |
-| `READ_CONTACTS` | Только при выборе получателя из системного списка контактов. |
-| `POST_NOTIFICATIONS` | Уведомления о ходе и результате SOS (Android 13+). |
-| `FOREGROUND_SERVICE`, `FOREGROUND_SERVICE_LOCATION` | Фоновое получение геолокации во время SOS. |
-| `WAKE_LOCK` | Завершение операции при погашенном экране. |
+## Notes
 
-Приложение **не запрашивает** `ACCESS_BACKGROUND_LOCATION`, интернет-разрешение,
-доступ к журналу SMS и не использует аналитику или рекламные SDK.
-
-## Настройка
-
-1. Откройте «Контакты», добавьте получателей и отметьте нужных как SOS-контакты.
-2. Откройте «Настройки» → «SIM для отправки SMS» и выберите SIM.
-   Если активна одна SIM, она используется автоматически.
-3. При необходимости измените шаблоны SOS и обычного сообщения.
-4. Выдайте разрешения на геолокацию, SMS и уведомления.
-5. Добавьте виджет ImHere на домашний экран.
-
-## Как работает SOS
-
-1. Приложение проверяет разрешения, список SOS-контактов и доступность выбранной SIM.
-2. Запрашивает новую геолокацию (до 20 секунд). Допускаются только свежие координаты
-   (не старше 30 секунд) с точностью не хуже 100 метров.
-3. Если подходящей геолокации нет, SMS не отправляется; пользователь получает уведомление.
-4. Опционально определяется адрес, но не дольше 2 секунд.
-5. Сообщение формируется по шаблону и отправляется отдельным SMS каждому получателю.
-6. Уведомление показывает результат по каждому получателю.
-
-Статус «отправлено оператору» означает только то, что SMS принято мобильной сетью.
-Статус «доставлено» появляется лишь при наличии отчёта о доставке от оператора;
-такие отчёты поддерживаются не всеми операторами и устройствами.
-
-## Виджет
-
-- Первое нажатие переводит виджет в состояние «Нажмите ещё раз».
-- Второе нажатие в течение 2 секунд запускает SOS.
-- Если интервал больше 2 секунд, нажатие начинает новый цикл.
-- Во время операции виджет заблокирован и показывает «Выполняется…».
-- После завершения операции виджет возвращается в исходное состояние.
-- Основной интерфейс приложения при этом не открывается.
-
-На MIUI/Xiaomi разрешите автозапуск и отключите агрессивное энергосбережение для ImHere,
-иначе система может останавливать фоновую операцию.
-
-## Конфиденциальность
-
-- Контакты, шаблоны и выбранная SIM хранятся только на устройстве (DataStore).
-- Геолокация не передаётся на сторонние серверы.
-- История SOS и перемещений не сохраняется.
-- Временное состояние двойного нажатия виджета хранится в `SharedPreferences` и не является историей.
-
-## Подпись release
-
-Создайте keystore (один раз):
-
-```powershell
-keytool -genkeypair -v -keystore imhere-release.jks -alias imhere `
-  -keyalg RSA -keysize 2048 -validity 10000
-```
-
-Создайте в корне проекта `keystore.properties` (файл исключён из Git):
-
-```properties
-storeFile=imhere-release.jks
-storePassword=...
-keyAlias=imhere
-keyPassword=...
-```
-
-Сборка:
-
-```powershell
-.\gradlew.bat :app:assembleRelease
-```
-
-Подписанный APK: `app\build\outputs\apk\release\app-release.apk`.
-Без `keystore.properties` release-сборка создаётся без подписи.
-
-## Тестирование
-
-- Автоматические тесты: `.\gradlew.bat :app:testDebugUnitTest`.
-- Матрица ручных проверок и результаты: [TESTING.md](TESTING.md).
-- История проверки прототипа виджета: [PROTOTYPE_TESTING.md](PROTOTYPE_TESTING.md).
+- On MIUI/Xiaomi, enable autostart and disable aggressive battery optimization for ImHere.
+- If the process is killed, late delivery reports are lost and the last shown status remains.
