@@ -102,6 +102,58 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
+            android:text="@string/prototype_sms_section"
+            android:textColor="#FF212121"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/et_sms_recipient"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:autofillHints="phone"
+            android:hint="@string/prototype_sms_recipient_hint"
+            android:importantForAutofill="yes"
+            android:inputType="phone"
+            android:maxLines="1" />
+
+        <CheckBox
+            android:id="@+id/cb_sms_dry_run"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:text="@string/prototype_sms_dry_run" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/prototype_sms_dry_run_hint"
+            android:textColor="#FF424242"
+            android:textSize="13sp" />
+
+        <Button
+            android:id="@+id/btn_send_test_sms"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/prototype_send_test_sms" />
+
+        <TextView
+            android:id="@+id/tv_sms_result"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:background="#FFF5F5F5"
+            android:padding="12dp"
+            android:textColor="#FF212121"
+            android:textSize="14sp"
+            android:visibility="gone" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
             android:lineSpacingExtra="4dp"
             android:text="@string/prototype_instructions"
             android:textColor="#FF424242"

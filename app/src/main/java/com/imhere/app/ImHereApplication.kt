@@ -4,6 +4,9 @@ import android.app.Application
 import android.content.Context
 import com.imhere.app.data.AppStateStore
 import com.imhere.app.data.SettingsRepository
+import com.imhere.app.sms.AndroidSmsTransport
+import com.imhere.app.sms.SimManager
+import com.imhere.app.sms.SmsDispatcher
 import com.imhere.app.util.PhoneNumberValidator
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -22,8 +25,6 @@ class ImHereApplication : Application() {
  */
 object AppGraph {
 
-    private lateinit var applicationContext: Context
-
     lateinit var context: Context
         private set
 
@@ -33,11 +34,24 @@ object AppGraph {
     lateinit var phoneNumbers: PhoneNumberValidator
         private set
 
+    lateinit var sims: SimManager
+        private set
+
+    lateinit var sms: SmsDispatcher
+        private set
+
     val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
 
     fun init(context: Context) {
         this.context = context.applicationContext
         settings = SettingsRepository(AppStateStore.create(this.context, scope), scope)
         phoneNumbers = PhoneNumberValidator(this.context)
+        sims = SimManager(this.context, scope)
+        sms = SmsDispatcher(
+            context = this.context,
+            sims = sims,
+            phoneNumbers = phoneNumbers,
+            transport = AndroidSmsTransport(this.context),
+        )
     }
 }

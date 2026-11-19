@@ -42,8 +42,10 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -56,6 +58,10 @@ import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.imhere.app.R
+import com.imhere.app.sms.SimAvailability
+import com.imhere.app.sms.resolveSimAvailability
+import com.imhere.app.ui.sim.SimPickerDialog
+import com.imhere.app.ui.sim.displayLabel
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -68,13 +74,31 @@ fun MainScreen(
     val context = LocalContext.current
     val state by viewModel.state.collectAsStateWithLifecycle()
     val availability by viewModel.location.collectAsStateWithLifecycle()
+    val simState by viewModel.simState.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
     val stubMessage = stringResource(R.string.main_stage_stub)
+    var showSimDialog by remember { mutableStateOf(false) }
 
     val permissionLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions(),
     ) { viewModel.refresh() }
+
+    val simPermissionLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestPermission(),
+    ) { viewModel.refreshSims() }
+
+    val simAvailability = remember(simState, state.selectedSubscriptionId) {
+        resolveSimAvailability(state.selectedSubscriptionId, simState)
+    }
+    val simValue = when (simAvailability) {
+        is SimAvailability.Ready -> simAvailability.sim.displayLabel(context)
+        SimAvailability.PermissionRequired,
+        is SimAvailability.NotSelected -> stringResource(R.string.main_sim_none)
+
+        is SimAvailability.Unavailable -> stringResource(R.string.main_sim_unavailable)
+        SimAvailability.NoSims -> stringResource(R.string.main_sim_no_sim)
+    }
 
     LifecycleResumeEffect(Unit) {
         viewModel.refresh()
@@ -175,8 +199,8 @@ fun MainScreen(
                     modifier = Modifier.weight(1f),
                     icon = Icons.Filled.Place,
                     title = stringResource(R.string.main_sim_title),
-                    value = stringResource(R.string.main_sim_none),
-                    onClick = null,
+                    value = simValue,
+                    onClick = { showSimDialog = true },
                 )
             }
 
@@ -188,6 +212,30 @@ fun MainScreen(
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
         }
+    }
+
+    if (showSimDialog) {
+        SimPickerDialog(
+            state = simState,
+            selectedId = state.selectedSubscriptionId,
+            onDismiss = { showSimDialog = false },
+            onSelect = { sim ->
+                viewModel.selectSim(sim.subscriptionId)
+                showSimDialog = false
+            },
+            onRequestPermission = {
+                simPermissionLauncher.launch(Manifest.permission.READ_PHONE_STATE)
+            },
+            onOpenAppSettings = {
+                context.startActivity(
+                    Intent(
+                        Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+                        Uri.fromParts("package", context.packageName, null),
+                    ),
+                )
+            },
+            onRefresh = { viewModel.refreshSims() },
+        )
     }
 }
 

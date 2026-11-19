@@ -65,7 +65,8 @@
     <string name="settings_section_sim">SIM-карта</string>
     <string name="settings_sim">SIM для отправки SMS</string>
     <string name="settings_sim_none">Не выбрана</string>
-    <string name="settings_sim_hint">Выбор SIM появится вместе с отправкой SMS.</string>
+    <string name="settings_sim_unavailable">Выбранная SIM недоступна</string>
+    <string name="settings_sim_hint">SMS отправляются только с выбранной SIM. Приложение не переключается на другую SIM автоматически.</string>
     <string name="settings_section_general">Общее</string>
     <string name="settings_language">Язык приложения</string>
     <string name="settings_language_system">Системный</string>
@@ -76,6 +77,48 @@
     <string name="settings_no_contacts">Сначала добавьте контакты на экране «Контакты».</string>
     <string name="settings_diagnostics">Диагностика</string>
     <string name="settings_diagnostics_hint">Инструменты прототипа, только debug-сборка</string>
+
+    <!-- SIM -->
+    <string name="sim_picker_title">SIM-карта</string>
+    <string name="sim_permission_rationale">Чтобы показать доступные SIM-карты и выбрать ту, с которой отправлять SMS, приложению нужен доступ к данным SIM.</string>
+    <string name="sim_permission_hint">Разрешение используется только для чтения списка SIM. Приложение никогда не переключает SIM автоматически.</string>
+    <string name="sim_permission_grant">Разрешить</string>
+    <string name="sim_picker_empty">SIM-карты не найдены.</string>
+    <string name="sim_picker_empty_hint">Вставьте SIM-карту, дождитесь сети и обновите список.</string>
+    <string name="sim_picker_refresh">Обновить</string>
+    <string name="sim_selected_unavailable">Выбранная SIM-карта недоступна. Выберите другую.</string>
+    <string name="sim_label_with_name">SIM %1$d · %2$s</string>
+    <string name="sim_label_slot_only">SIM %1$d</string>
+    <string name="main_sim_unavailable">Недоступна</string>
+    <string name="main_sim_no_sim">Нет SIM</string>
+
+    <!-- SMS -->
+    <string name="sms_result_title">Результат отправки SMS</string>
+    <string name="sms_result_line">%1$s: %2$s</string>
+    <string name="sms_status_pending">ожидает отправки</string>
+    <string name="sms_status_sent">отправлено оператору, ожидается подтверждение доставки</string>
+    <string name="sms_status_failed">ошибка отправки: %1$s</string>
+    <string name="sms_status_delivered">доставлено</string>
+    <string name="sms_status_not_delivered">не доставлено: %1$s</string>
+    <string name="sms_error_generic">ошибка оператора</string>
+    <string name="sms_error_no_service">нет мобильной сети</string>
+    <string name="sms_error_radio_off">радиомодуль выключен</string>
+    <string name="sms_error_null_pdu">оператор отклонил сообщение</string>
+    <string name="sms_error_limit">превышен лимит отправки</string>
+    <string name="sms_error_fdn">отправка запрещена настройками SIM</string>
+    <string name="sms_error_invalid_number">неверный номер</string>
+    <string name="sms_error_no_permission">нет разрешения на отправку SMS</string>
+    <string name="sms_error_too_long">сообщение слишком длинное</string>
+    <string name="sms_error_not_sent">сообщение не отправлено</string>
+    <string name="sms_rejection_no_permission">Нет разрешения на отправку SMS.</string>
+    <string name="sms_rejection_sim_permission">Нет разрешения на доступ к данным SIM.</string>
+    <string name="sms_rejection_no_sim">SIM-карта не найдена.</string>
+    <string name="sms_rejection_sim_not_selected">Выберите SIM-карту в настройках.</string>
+    <string name="sms_rejection_sim_unavailable">Выбранная SIM-карта недоступна. Выберите другую.</string>
+    <string name="sms_rejection_no_recipients">Не выбраны получатели.</string>
+    <string name="sms_rejection_empty_message">Сообщение пустое.</string>
+    <string name="sms_rejection_too_long">Сообщение слишком длинное.</string>
+    <string name="sms_rejection_split_failed">Не удалось подготовить сообщение.</string>
 
     <!-- Templates -->
     <string name="sos_template_default">SOS! Мне нужна помощь.\nМои координаты: {latitude}, {longitude}\n{map_link}\nВремя: {time}</string>
@@ -92,9 +135,9 @@
 
     <!-- Prototype screen -->
     <string name="prototype_title">ImHere — прототип виджета</string>
-    <string name="prototype_subtitle">Проверочная сборка SOS-виджета. Двойное нажатие запускает фоновое получение геолокации. SMS в прототипе не отправляются.</string>
-    <string name="prototype_instructions">1. Выдайте разрешения.\n2. Добавьте виджет ImHere на рабочий стол (долгое нажатие на рабочем столе → Виджеты).\n3. Нажмите на виджет один раз, затем второй раз в течение 2 секунд.\n4. Смотрите уведомление и лог с тегом ImHerePrototype.</string>
-    <string name="prototype_permissions_status">Разрешение на геолокацию: %1$s\nТочное местоположение: %2$s\nРазрешение на уведомления: %3$s\nСлужбы геолокации: %4$s\nСервисы Google Play: %5$s</string>
+    <string name="prototype_subtitle">Проверочная сборка SOS-виджета и SMS-движка. В прототипе реальный SOS SMS не отправляет; для проверки SMS используйте тестовый блок ниже.</string>
+    <string name="prototype_instructions">1. Выдайте разрешения.\n2. Добавьте виджет ImHere на рабочий стол (долгое нажатие на рабочем столе → Виджеты).\n3. Нажмите на виджет один раз, затем второй раз в течение 2 секунд.\n4. Смотрите уведомление и логи с тегами ImHerePrototype и ImHereSms.\n5. Тестовый блок SMS по умолчанию имитирует отправку; номер, оканчивающийся на 0000, сообщает об ошибке отправки.</string>
+    <string name="prototype_permissions_status">Разрешение на геолокацию: %1$s\nТочное местоположение: %2$s\nРазрешение на уведомления: %3$s\nРазрешение на SMS: %4$s\nДоступ к данным SIM: %5$s\nСлужбы геолокации: %6$s\nСервисы Google Play: %7$s</string>
     <string name="prototype_status_granted">выдано</string>
     <string name="prototype_status_denied">не выдано</string>
     <string name="prototype_status_approximate">только приблизительное</string>
@@ -109,6 +152,15 @@
     <string name="prototype_location_success">Широта: %1$.6f\nДолгота: %2$.6f\nТочность: ±%3$.0f м\nВозраст: %4$d с\nИсточник: %5$s\nАдрес: %6$s\nСсылка: %7$s</string>
     <string name="prototype_location_failure">Подходящая геолокация не получена:\n%1$s</string>
     <string name="prototype_location_no_address">не определён</string>
+    <string name="prototype_sms_section">Тест SMS</string>
+    <string name="prototype_sms_recipient_hint">Номер получателя</string>
+    <string name="prototype_sms_dry_run">Имитировать отправку (без реального SMS)</string>
+    <string name="prototype_sms_dry_run_hint">Номер, оканчивающийся на 0000, имитирует ошибку отправки. Отчёты о доставке тоже имитируются.</string>
+    <string name="prototype_send_test_sms">Отправить тестовое SMS</string>
+    <string name="prototype_sms_test_message">ImHere: тестовое SMS.</string>
+    <string name="prototype_sms_running">Отправка…</string>
+    <string name="prototype_sms_invalid_number">Введите корректный номер.</string>
+    <string name="prototype_sms_no_permission">Нужны разрешения на SMS и данные SIM.</string>
     <string name="prototype_debug_inexact">Режим прототипа: принимать неточную геолокацию</string>
     <string name="prototype_debug_delay">Режим прототипа: задержать операцию на 10 с (проверка блокировки повторного запуска)</string>
     <string name="prototype_permission_denied_hint">Разрешение отклонено навсегда. Включите его вручную в настройках системы.</string>

@@ -1,6 +1,11 @@
 package com.imhere.app.ui.settings
 
+import android.Manifest
 import android.content.Intent
+import android.net.Uri
+import android.provider.Settings
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
@@ -45,13 +50,18 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.os.LocaleListCompat
+import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.imhere.app.BuildConfig
 import com.imhere.app.R
 import com.imhere.app.data.model.AppState
 import com.imhere.app.data.model.Contact
+import com.imhere.app.sms.SimAvailability
+import com.imhere.app.sms.resolveSimAvailability
 import com.imhere.app.ui.PrototypeActivity
+import com.imhere.app.ui.sim.SimPickerDialog
+import com.imhere.app.ui.sim.displayLabel
 import com.imhere.app.util.MessageTemplate
 
 private const val LANGUAGE_SYSTEM = ""
@@ -64,6 +74,29 @@ fun SettingsScreen(
 ) {
     val context = LocalContext.current
     val state by viewModel.state.collectAsStateWithLifecycle()
+    val simState by viewModel.simState.collectAsStateWithLifecycle()
+    var showSimDialog by remember { mutableStateOf(false) }
+
+    val simPermissionLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestPermission(),
+    ) { viewModel.refreshSims() }
+
+    LifecycleResumeEffect(Unit) {
+        viewModel.refreshSims()
+        onPauseOrDispose { }
+    }
+
+    val simAvailability = remember(simState, state.selectedSubscriptionId) {
+        resolveSimAvailability(state.selectedSubscriptionId, simState)
+    }
+    val simSubtitle = when (simAvailability) {
+        is SimAvailability.Ready -> simAvailability.sim.displayLabel(context)
+        SimAvailability.PermissionRequired,
+        is SimAvailability.NotSelected -> stringResource(R.string.settings_sim_none)
+
+        is SimAvailability.Unavailable -> stringResource(R.string.settings_sim_unavailable)
+        SimAvailability.NoSims -> stringResource(R.string.main_sim_no_sim)
+    }
 
     val defaultSosTemplate = stringResource(R.string.sos_template_default)
     val defaultPlainTemplate = stringResource(R.string.plain_template_default)
@@ -134,8 +167,8 @@ fun SettingsScreen(
             item {
                 SettingsRow(
                     title = stringResource(R.string.settings_sim),
-                    subtitle = stringResource(R.string.settings_sim_none),
-                    onClick = null,
+                    subtitle = simSubtitle,
+                    onClick = { showSimDialog = true },
                 )
             }
             item {
@@ -237,6 +270,30 @@ fun SettingsScreen(
                 AppCompatDelegate.setApplicationLocales(locales)
                 editLanguage = false
             },
+        )
+    }
+
+    if (showSimDialog) {
+        SimPickerDialog(
+            state = simState,
+            selectedId = state.selectedSubscriptionId,
+            onDismiss = { showSimDialog = false },
+            onSelect = { sim ->
+                viewModel.selectSim(sim.subscriptionId)
+                showSimDialog = false
+            },
+            onRequestPermission = {
+                simPermissionLauncher.launch(Manifest.permission.READ_PHONE_STATE)
+            },
+            onOpenAppSettings = {
+                context.startActivity(
+                    Intent(
+                        Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+                        Uri.fromParts("package", context.packageName, null),
+                    ),
+                )
+            },
+            onRefresh = { viewModel.refreshSims() },
         )
     }
 }

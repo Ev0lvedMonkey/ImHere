@@ -65,7 +65,8 @@
     <string name="settings_section_sim">SIM card</string>
     <string name="settings_sim">SIM for sending SMS</string>
     <string name="settings_sim_none">Not selected</string>
-    <string name="settings_sim_hint">SIM selection becomes available once SMS sending is implemented.</string>
+    <string name="settings_sim_unavailable">Selected SIM is unavailable</string>
+    <string name="settings_sim_hint">SMS are sent only from the selected SIM. The app never switches to another SIM automatically.</string>
     <string name="settings_section_general">General</string>
     <string name="settings_language">App language</string>
     <string name="settings_language_system">System</string>
@@ -76,6 +77,48 @@
     <string name="settings_no_contacts">Add contacts first on the Contacts screen.</string>
     <string name="settings_diagnostics">Diagnostics</string>
     <string name="settings_diagnostics_hint">Prototype tools, debug builds only</string>
+
+    <!-- SIM -->
+    <string name="sim_picker_title">SIM card</string>
+    <string name="sim_permission_rationale">To show the available SIM cards and choose the one for sending SMS, the app needs access to SIM data.</string>
+    <string name="sim_permission_hint">The permission is used only to read the SIM list. The app never changes the selected SIM automatically.</string>
+    <string name="sim_permission_grant">Allow</string>
+    <string name="sim_picker_empty">No SIM cards found.</string>
+    <string name="sim_picker_empty_hint">Insert a SIM card, wait for the network, then refresh.</string>
+    <string name="sim_picker_refresh">Refresh</string>
+    <string name="sim_selected_unavailable">The selected SIM is not available. Choose another one.</string>
+    <string name="sim_label_with_name">SIM %1$d · %2$s</string>
+    <string name="sim_label_slot_only">SIM %1$d</string>
+    <string name="main_sim_unavailable">Unavailable</string>
+    <string name="main_sim_no_sim">No SIM</string>
+
+    <!-- SMS -->
+    <string name="sms_result_title">SMS result</string>
+    <string name="sms_result_line">%1$s: %2$s</string>
+    <string name="sms_status_pending">waiting to be sent</string>
+    <string name="sms_status_sent">sent to the operator, awaiting delivery confirmation</string>
+    <string name="sms_status_failed">send failed: %1$s</string>
+    <string name="sms_status_delivered">delivered</string>
+    <string name="sms_status_not_delivered">not delivered: %1$s</string>
+    <string name="sms_error_generic">operator error</string>
+    <string name="sms_error_no_service">no mobile network</string>
+    <string name="sms_error_radio_off">radio is off</string>
+    <string name="sms_error_null_pdu">the operator rejected the message</string>
+    <string name="sms_error_limit">sending limit exceeded</string>
+    <string name="sms_error_fdn">sending is blocked by the SIM settings</string>
+    <string name="sms_error_invalid_number">invalid number</string>
+    <string name="sms_error_no_permission">SMS permission is missing</string>
+    <string name="sms_error_too_long">the message is too long</string>
+    <string name="sms_error_not_sent">the message was not sent</string>
+    <string name="sms_rejection_no_permission">SMS permission is not granted.</string>
+    <string name="sms_rejection_sim_permission">Access to SIM data is not granted.</string>
+    <string name="sms_rejection_no_sim">No SIM card found.</string>
+    <string name="sms_rejection_sim_not_selected">Choose a SIM card in the settings.</string>
+    <string name="sms_rejection_sim_unavailable">The selected SIM card is unavailable. Choose another one.</string>
+    <string name="sms_rejection_no_recipients">No recipients selected.</string>
+    <string name="sms_rejection_empty_message">The message is empty.</string>
+    <string name="sms_rejection_too_long">The message is too long.</string>
+    <string name="sms_rejection_split_failed">Could not prepare the message.</string>
 
     <!-- Templates -->
     <string name="sos_template_default">SOS! I need help.\nMy coordinates: {latitude}, {longitude}\n{map_link}\nTime: {time}</string>
@@ -92,9 +135,9 @@
 
     <!-- Prototype screen -->
     <string name="prototype_title">ImHere — widget prototype</string>
-    <string name="prototype_subtitle">Verification build for the SOS widget. Double tap the widget to start a foreground location request. No SMS is sent in the prototype.</string>
-    <string name="prototype_instructions">1. Grant permissions.\n2. Add the ImHere widget to the home screen (long press on the home screen → Widgets).\n3. Tap the widget once, then a second time within 2 seconds.\n4. Watch the notification and the Logcat tag ImHerePrototype.</string>
-    <string name="prototype_permissions_status">Location permission: %1$s\nPrecise location: %2$s\nNotification permission: %3$s\nLocation services: %4$s\nGoogle Play services: %5$s</string>
+    <string name="prototype_subtitle">Verification build for the SOS widget and the SMS engine. The real SOS flow does not send SMS in the prototype; use the test section below for SMS diagnostics.</string>
+    <string name="prototype_instructions">1. Grant permissions.\n2. Add the ImHere widget to the home screen (long press on the home screen → Widgets).\n3. Tap the widget once, then a second time within 2 seconds.\n4. Watch the notification and the Logcat tags ImHerePrototype and ImHereSms.\n5. The SMS test section simulates sending by default; a number ending in 0000 reports a send error.</string>
+    <string name="prototype_permissions_status">Location permission: %1$s\nPrecise location: %2$s\nNotification permission: %3$s\nSMS permission: %4$s\nSIM data permission: %5$s\nLocation services: %6$s\nGoogle Play services: %7$s</string>
     <string name="prototype_status_granted">granted</string>
     <string name="prototype_status_denied">not granted</string>
     <string name="prototype_status_approximate">approximate only</string>
@@ -109,6 +152,15 @@
     <string name="prototype_location_success">Latitude: %1$.6f\nLongitude: %2$.6f\nAccuracy: ±%3$.0f m\nAge: %4$d s\nSource: %5$s\nAddress: %6$s\nLink: %7$s</string>
     <string name="prototype_location_failure">No suitable fix:\n%1$s</string>
     <string name="prototype_location_no_address">not available</string>
+    <string name="prototype_sms_section">SMS test</string>
+    <string name="prototype_sms_recipient_hint">Recipient number</string>
+    <string name="prototype_sms_dry_run">Simulate sending (no real SMS)</string>
+    <string name="prototype_sms_dry_run_hint">A number ending in 0000 simulates a send error. Delivery reports are simulated too.</string>
+    <string name="prototype_send_test_sms">Send a test SMS</string>
+    <string name="prototype_sms_test_message">ImHere: SMS test message.</string>
+    <string name="prototype_sms_running">Sending…</string>
+    <string name="prototype_sms_invalid_number">Enter a valid phone number.</string>
+    <string name="prototype_sms_no_permission">SMS and SIM permissions are required.</string>
     <string name="prototype_debug_inexact">Prototype mode: accept low-accuracy location</string>
     <string name="prototype_debug_delay">Prototype mode: hold the operation for 10 s (checks the repeated-tap lock)</string>
     <string name="prototype_permission_denied_hint">Permission denied permanently. Open the system settings to enable it manually.</string>
