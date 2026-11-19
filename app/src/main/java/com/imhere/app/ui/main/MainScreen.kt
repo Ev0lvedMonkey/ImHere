@@ -85,6 +85,9 @@ fun MainScreen(
     val alreadyRunningMessage = stringResource(R.string.notif_already_running)
     val startFailedMessage = stringResource(R.string.notif_start_failed)
     val smsPermissionMessage = stringResource(R.string.sms_rejection_no_permission)
+    val simPermissionMessage = stringResource(R.string.sms_rejection_sim_permission)
+    val locationPermissionMessage = stringResource(R.string.notif_failure_permission)
+    val fineLocationMessage = stringResource(R.string.notif_failure_fine_denied)
     var showSimDialog by remember { mutableStateOf(false) }
     var pendingMode by remember { mutableStateOf<SosMode?>(null) }
 
@@ -95,12 +98,21 @@ fun MainScreen(
         val mode = pendingMode
         pendingMode = null
         if (mode != null) {
-            if (missingSosPermissions(context).isEmpty()) {
+            val stillMissing = missingSosPermissions(context)
+            if (stillMissing.isEmpty()) {
                 if (!SosService.start(context, "main", mode)) {
                     scope.launch { snackbarHostState.showSnackbar(startFailedMessage) }
                 }
-            } else if (missingSosPermissions(context).contains(Manifest.permission.SEND_SMS)) {
-                scope.launch { snackbarHostState.showSnackbar(smsPermissionMessage) }
+            } else {
+                val message = when {
+                    Manifest.permission.SEND_SMS in stillMissing -> smsPermissionMessage
+                    Manifest.permission.READ_PHONE_STATE in stillMissing -> simPermissionMessage
+                    Manifest.permission.ACCESS_FINE_LOCATION in stillMissing &&
+                        Manifest.permission.ACCESS_COARSE_LOCATION !in stillMissing ->
+                        fineLocationMessage
+                    else -> locationPermissionMessage
+                }
+                scope.launch { snackbarHostState.showSnackbar(message) }
             }
         }
     }
