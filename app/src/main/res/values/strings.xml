@@ -13,7 +13,6 @@
     <string name="main_sos_hint">Send a help signal to your SOS contacts</string>
     <string name="main_send_location">Send my location</string>
     <string name="main_settings">Settings</string>
-    <string name="main_stage_stub">Message sending will be enabled in the next development stage.</string>
     <string name="main_sos_contacts_title">SOS contacts</string>
     <string name="main_sos_contacts_none">None selected</string>
     <string name="main_sos_contacts_count">%1$d selected</string>
@@ -135,8 +134,8 @@
 
     <!-- Prototype screen -->
     <string name="prototype_title">ImHere — widget prototype</string>
-    <string name="prototype_subtitle">Verification build for the SOS widget and the SMS engine. The real SOS flow does not send SMS in the prototype; use the test section below for SMS diagnostics.</string>
-    <string name="prototype_instructions">1. Grant permissions.\n2. Add the ImHere widget to the home screen (long press on the home screen → Widgets).\n3. Tap the widget once, then a second time within 2 seconds.\n4. Watch the notification and the Logcat tags ImHerePrototype and ImHereSms.\n5. The SMS test section simulates sending by default; a number ending in 0000 reports a send error.</string>
+    <string name="prototype_subtitle">Verification build for the SOS widget and the SMS engine. The SOS pipeline sends real SMS to the selected SOS contacts.</string>
+    <string name="prototype_instructions">1. Grant permissions.\n2. Add the ImHere widget to the home screen (long press on the home screen → Widgets).\n3. Tap the widget once, then a second time within 2 seconds.\n4. Watch the notification and the Logcat tags ImHerePrototype and ImHereSms.\n5. The SOS button above and the widget send real SMS to SOS contacts. The SMS test section below simulates sending by default; a number ending in 0000 reports a send error.</string>
     <string name="prototype_permissions_status">Location permission: %1$s\nPrecise location: %2$s\nNotification permission: %3$s\nSMS permission: %4$s\nSIM data permission: %5$s\nLocation services: %6$s\nGoogle Play services: %7$s</string>
     <string name="prototype_status_granted">granted</string>
     <string name="prototype_status_denied">not granted</string>
@@ -146,7 +145,7 @@
     <string name="prototype_status_available">available</string>
     <string name="prototype_status_unavailable">not available</string>
     <string name="prototype_grant_permissions">Grant permissions</string>
-    <string name="prototype_run_test">Run SOS pipeline without widget</string>
+    <string name="prototype_run_test">Run full SOS (sends real SMS)</string>
     <string name="prototype_check_location">Get a location fix (no SOS)</string>
     <string name="prototype_location_running">Requesting a location fix…</string>
     <string name="prototype_location_success">Latitude: %1$.6f\nLongitude: %2$.6f\nAccuracy: ±%3$.0f m\nAge: %4$d s\nSource: %5$s\nAddress: %6$s\nLink: %7$s</string>
@@ -172,11 +171,16 @@
     <string name="notif_channel_result_name">SOS result</string>
     <string name="notif_channel_result_description">Shown when the SOS operation finishes or fails.</string>
     <string name="notif_progress_title">ImHere SOS</string>
+    <string name="notif_preparing">Preparing…</string>
     <string name="notif_locating">Getting your location…</string>
+    <string name="notif_sending">Sending SMS…</string>
+    <string name="notif_sms_sent_title">SMS sent</string>
+    <string name="notif_no_recipients">No SOS contacts selected. Add recipients in Settings.</string>
     <string name="notif_success_title">Location received</string>
     <string name="notif_success_text">%1$.5f, %2$.5f (±%3$.0f m)\nAge: %4$d s\nSource: %5$s</string>
     <string name="notif_success_address">Address: %1$s</string>
     <string name="notif_failure_title">SOS failed</string>
+    <string name="notif_failure_title_plain">Sending failed</string>
     <string name="notif_failure_permission">Location permission is not granted.</string>
     <string name="notif_failure_fine_denied">Precise location access is not granted. Allow precise location in the app settings.</string>
     <string name="notif_failure_disabled">Location services are disabled.</string>

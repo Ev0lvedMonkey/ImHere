@@ -1,6 +1,7 @@
 package com.imhere.app.notifications
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -63,27 +64,37 @@ object NotificationHelper {
             }
             .build()
 
-    fun showResult(context: Context, title: String, text: String) {
+    @SuppressLint("MissingPermission") // Guarded by canPost() below.
+    fun showResult(context: Context, title: String, text: String, onlyAlertOnce: Boolean = false) {
         // On Android 13+ posting is silently dropped without the runtime permission.
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
-            ContextCompat.checkSelfPermission(
-                context,
-                Manifest.permission.POST_NOTIFICATIONS,
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            return
-        }
+        if (!canPost(context)) return
         val notification = Notification.Builder(context, CHANNEL_RESULT)
             .setSmallIcon(R.drawable.ic_notification)
             .setContentTitle(title)
             .setContentText(text)
             .setStyle(Notification.BigTextStyle().bigText(text))
             .setAutoCancel(true)
+            .setOnlyAlertOnce(onlyAlertOnce)
             .setCategory(Notification.CATEGORY_STATUS)
             .setContentIntent(openAppIntent(context))
             .build()
         NotificationManagerCompat.from(context).notify(RESULT_NOTIFICATION_ID, notification)
     }
+
+    /** Replaces the foreground progress notification while the service runs. */
+    @SuppressLint("MissingPermission") // Guarded by canPost() below.
+    fun updateProgress(context: Context, text: String) {
+        if (!canPost(context)) return
+        NotificationManagerCompat.from(context)
+            .notify(PROGRESS_NOTIFICATION_ID, progress(context, text))
+    }
+
+    private fun canPost(context: Context): Boolean =
+        Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU ||
+            ContextCompat.checkSelfPermission(
+                context,
+                Manifest.permission.POST_NOTIFICATIONS,
+            ) == PackageManager.PERMISSION_GRANTED
 
     private fun openAppIntent(context: Context): PendingIntent {
         val intent = Intent(context, MainActivity::class.java)

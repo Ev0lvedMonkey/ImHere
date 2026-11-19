@@ -13,7 +13,6 @@
     <string name="main_sos_hint">Отправить сигнал помощи SOS-контактам</string>
     <string name="main_send_location">Отправить геолокацию</string>
     <string name="main_settings">Настройки</string>
-    <string name="main_stage_stub">Отправка сообщений появится на следующем этапе разработки.</string>
     <string name="main_sos_contacts_title">SOS-контакты</string>
     <string name="main_sos_contacts_none">Не выбраны</string>
     <string name="main_sos_contacts_count">Выбрано: %1$d</string>
@@ -135,8 +134,8 @@
 
     <!-- Prototype screen -->
     <string name="prototype_title">ImHere — прототип виджета</string>
-    <string name="prototype_subtitle">Проверочная сборка SOS-виджета и SMS-движка. В прототипе реальный SOS SMS не отправляет; для проверки SMS используйте тестовый блок ниже.</string>
-    <string name="prototype_instructions">1. Выдайте разрешения.\n2. Добавьте виджет ImHere на рабочий стол (долгое нажатие на рабочем столе → Виджеты).\n3. Нажмите на виджет один раз, затем второй раз в течение 2 секунд.\n4. Смотрите уведомление и логи с тегами ImHerePrototype и ImHereSms.\n5. Тестовый блок SMS по умолчанию имитирует отправку; номер, оканчивающийся на 0000, сообщает об ошибке отправки.</string>
+    <string name="prototype_subtitle">Проверочная сборка SOS-виджета и SMS-движка. SOS-сценарий отправляет реальные SMS выбранным SOS-контактам.</string>
+    <string name="prototype_instructions">1. Выдайте разрешения.\n2. Добавьте виджет ImHere на рабочий стол (долгое нажатие на рабочем столе → Виджеты).\n3. Нажмите на виджет один раз, затем второй раз в течение 2 секунд.\n4. Смотрите уведомление и логи с тегами ImHerePrototype и ImHereSms.\n5. Кнопка SOS выше и виджет отправляют реальные SMS SOS-контактам. Тестовый блок SMS ниже по умолчанию имитирует отправку; номер, оканчивающийся на 0000, сообщает об ошибке отправки.</string>
     <string name="prototype_permissions_status">Разрешение на геолокацию: %1$s\nТочное местоположение: %2$s\nРазрешение на уведомления: %3$s\nРазрешение на SMS: %4$s\nДоступ к данным SIM: %5$s\nСлужбы геолокации: %6$s\nСервисы Google Play: %7$s</string>
     <string name="prototype_status_granted">выдано</string>
     <string name="prototype_status_denied">не выдано</string>
@@ -146,7 +145,7 @@
     <string name="prototype_status_available">доступны</string>
     <string name="prototype_status_unavailable">недоступны</string>
     <string name="prototype_grant_permissions">Выдать разрешения</string>
-    <string name="prototype_run_test">Запустить SOS-пайплайн без виджета</string>
+    <string name="prototype_run_test">Запустить полный SOS (реальные SMS)</string>
     <string name="prototype_check_location">Получить геолокацию без SOS</string>
     <string name="prototype_location_running">Получение геолокации…</string>
     <string name="prototype_location_success">Широта: %1$.6f\nДолгота: %2$.6f\nТочность: ±%3$.0f м\nВозраст: %4$d с\nИсточник: %5$s\nАдрес: %6$s\nСсылка: %7$s</string>
@@ -172,11 +171,16 @@
     <string name="notif_channel_result_name">Результат SOS</string>
     <string name="notif_channel_result_description">Показывается по завершении или при ошибке SOS-операции.</string>
     <string name="notif_progress_title">ImHere SOS</string>
+    <string name="notif_preparing">Подготовка…</string>
     <string name="notif_locating">Получение геолокации…</string>
+    <string name="notif_sending">Отправка SMS…</string>
+    <string name="notif_sms_sent_title">SMS отправлено</string>
+    <string name="notif_no_recipients">Не выбраны SOS-контакты. Добавьте получателей в настройках.</string>
     <string name="notif_success_title">Геолокация получена</string>
     <string name="notif_success_text">%1$.5f, %2$.5f (±%3$.0f м)\nВозраст: %4$d с\nИсточник: %5$s</string>
     <string name="notif_success_address">Адрес: %1$s</string>
     <string name="notif_failure_title">SOS не выполнен</string>
+    <string name="notif_failure_title_plain">Не удалось отправить</string>
     <string name="notif_failure_permission">Нет разрешения на геолокацию.</string>
     <string name="notif_failure_fine_denied">Нет доступа к точному местоположению. Включите точное местоположение в настройках приложения.</string>
     <string name="notif_failure_disabled">Службы геолокации отключены.</string>

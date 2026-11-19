@@ -9,6 +9,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.stateIn
 
 /**
@@ -30,6 +31,17 @@ class SettingsRepository(
 
     suspend fun update(transform: (AppState) -> AppState) {
         dataStore.updateData { current -> transform(current).sanitized() }
+    }
+
+    /**
+     * Reads the latest saved state directly from the store. Used by the SOS
+     * service, where the cached [state] may still hold the initial default
+     * value right after a cold start from the widget.
+     */
+    suspend fun current(): AppState = try {
+        dataStore.data.first().sanitized()
+    } catch (io: IOException) {
+        AppState()
     }
 
     /** Adds a contact or replaces an existing one, keeping list order stable. */

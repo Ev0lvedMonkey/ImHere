@@ -1,7 +1,9 @@
 package com.imhere.app.ui.main
 
 import android.Manifest
+import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.provider.Settings
@@ -54,10 +56,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.imhere.app.R
+import com.imhere.app.service.SosMode
+import com.imhere.app.service.SosService
 import com.imhere.app.sms.SimAvailability
 import com.imhere.app.sms.resolveSimAvailability
 import com.imhere.app.ui.sim.SimPickerDialog
@@ -77,12 +82,28 @@ fun MainScreen(
     val simState by viewModel.simState.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
-    val stubMessage = stringResource(R.string.main_stage_stub)
+    val alreadyRunningMessage = stringResource(R.string.notif_already_running)
+    val startFailedMessage = stringResource(R.string.notif_start_failed)
+    val smsPermissionMessage = stringResource(R.string.sms_rejection_no_permission)
     var showSimDialog by remember { mutableStateOf(false) }
+    var pendingMode by remember { mutableStateOf<SosMode?>(null) }
 
     val permissionLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions(),
-    ) { viewModel.refresh() }
+    ) {
+        viewModel.refresh()
+        val mode = pendingMode
+        pendingMode = null
+        if (mode != null) {
+            if (missingSosPermissions(context).isEmpty()) {
+                if (!SosService.start(context, "main", mode)) {
+                    scope.launch { snackbarHostState.showSnackbar(startFailedMessage) }
+                }
+            } else if (missingSosPermissions(context).contains(Manifest.permission.SEND_SMS)) {
+                scope.launch { snackbarHostState.showSnackbar(smsPermissionMessage) }
+            }
+        }
+    }
 
     val simPermissionLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestPermission(),
@@ -98,6 +119,30 @@ fun MainScreen(
 
         is SimAvailability.Unavailable -> stringResource(R.string.main_sim_unavailable)
         SimAvailability.NoSims -> stringResource(R.string.main_sim_no_sim)
+    }
+
+    val startFlow: (SosMode) -> Unit = { mode ->
+        if (SosService.isRunning()) {
+            scope.launch { snackbarHostState.showSnackbar(alreadyRunningMessage) }
+        } else {
+            val missing = missingSosPermissions(context)
+            if (missing.isEmpty()) {
+                if (!SosService.start(context, "main", mode)) {
+                    scope.launch { snackbarHostState.showSnackbar(startFailedMessage) }
+                }
+            } else {
+                pendingMode = mode
+                val request = buildList {
+                    addAll(missing)
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
+                        !isGranted(context, Manifest.permission.POST_NOTIFICATIONS)
+                    ) {
+                        add(Manifest.permission.POST_NOTIFICATIONS)
+                    }
+                }
+                permissionLauncher.launch(request.toTypedArray())
+            }
+        }
     }
 
     LifecycleResumeEffect(Unit) {
@@ -146,7 +191,7 @@ fun MainScreen(
             )
 
             Button(
-                onClick = { scope.launch { snackbarHostState.showSnackbar(stubMessage) } },
+                onClick = { startFlow(SosMode.SOS) },
                 modifier = Modifier
                     .fillMaxWidth()
                     .heightIn(min = 170.dp),
@@ -171,7 +216,7 @@ fun MainScreen(
             }
 
             OutlinedButton(
-                onClick = { scope.launch { snackbarHostState.showSnackbar(stubMessage) } },
+                onClick = { startFlow(SosMode.LOCATION) },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(56.dp),
@@ -358,3 +403,13 @@ private fun requiredPermissions(): Array<String> = buildList {
         add(Manifest.permission.POST_NOTIFICATIONS)
     }
 }.toTypedArray()
+
+private fun missingSosPermissions(context: Context): List<String> = listOf(
+    Manifest.permission.ACCESS_FINE_LOCATION,
+    Manifest.permission.ACCESS_COARSE_LOCATION,
+    Manifest.permission.SEND_SMS,
+    Manifest.permission.READ_PHONE_STATE,
+).filterNot { isGranted(context, it) }
+
+private fun isGranted(context: Context, permission: String): Boolean =
+    ContextCompat.checkSelfPermission(context, permission) == PackageManager.PERMISSION_GRANTED

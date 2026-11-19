@@ -94,6 +94,13 @@ class PrototypeActivity : ComponentActivity() {
                 requestPermissions()
                 return@setOnClickListener
             }
+            if (!isGranted(Manifest.permission.SEND_SMS) ||
+                !isGranted(Manifest.permission.READ_PHONE_STATE)
+            ) {
+                Toast.makeText(this, R.string.prototype_sms_no_permission, Toast.LENGTH_LONG).show()
+                requestPermissions()
+                return@setOnClickListener
+            }
             if (SosService.isRunning()) {
                 Toast.makeText(this, R.string.notif_already_running, Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
@@ -126,6 +133,8 @@ class PrototypeActivity : ComponentActivity() {
         val permissions = buildList {
             add(Manifest.permission.ACCESS_FINE_LOCATION)
             add(Manifest.permission.ACCESS_COARSE_LOCATION)
+            add(Manifest.permission.SEND_SMS)
+            add(Manifest.permission.READ_PHONE_STATE)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                 add(Manifest.permission.POST_NOTIFICATIONS)
             }
