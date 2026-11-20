@@ -28,8 +28,6 @@
     <string name="prototype_sms_running">Sending…</string>
     <string name="prototype_sms_invalid_number">Enter a valid phone number.</string>
     <string name="prototype_sms_no_permission">SMS and SIM permissions are required.</string>
-    <string name="prototype_debug_inexact">Prototype mode: accept low-accuracy location</string>
-    <string name="prototype_debug_delay">Prototype mode: hold the operation for 10 s (checks the repeated-tap lock)</string>
     <string name="prototype_permission_denied_hint">Permission denied permanently. Open the system settings to enable it manually.</string>
     <string name="prototype_open_settings">Open app settings</string>
 

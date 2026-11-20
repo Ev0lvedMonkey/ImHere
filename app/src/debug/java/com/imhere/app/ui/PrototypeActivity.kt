@@ -72,18 +72,6 @@ class PrototypeActivity : ComponentActivity() {
         val testButton = findViewById<Button>(R.id.btn_test)
         val checkLocationButton = findViewById<Button>(R.id.btn_check_location)
         val sendSmsButton = findViewById<Button>(R.id.btn_send_test_sms)
-        val debugCheckBox = findViewById<CheckBox>(R.id.cb_debug_inexact)
-        val delayCheckBox = findViewById<CheckBox>(R.id.cb_debug_delay)
-
-        debugCheckBox.isChecked = PrototypeSettings.acceptInexactLocation(this)
-        debugCheckBox.setOnCheckedChangeListener { _, checked ->
-            PrototypeSettings.setAcceptInexactLocation(this, checked)
-        }
-
-        delayCheckBox.isChecked = PrototypeSettings.artificialDelayMillis(this) > 0L
-        delayCheckBox.setOnCheckedChangeListener { _, checked ->
-            PrototypeSettings.setArtificialDelay(this, checked)
-        }
 
         grantButton.setOnClickListener { requestPermissions() }
 
@@ -159,8 +147,7 @@ class PrototypeActivity : ComponentActivity() {
 
         lifecycleScope.launch {
             try {
-                val acceptInexact = PrototypeSettings.acceptInexactLocation(this@PrototypeActivity)
-                val outcome = resolver.resolve(acceptInexact)
+                val outcome = resolver.resolve()
                 val text = when (outcome) {
                     is LocationOutcome.Success -> {
                         val fix = outcome.fix

@@ -28,8 +28,6 @@
     <string name="prototype_sms_running">Отправка…</string>
     <string name="prototype_sms_invalid_number">Введите корректный номер.</string>
     <string name="prototype_sms_no_permission">Нужны разрешения на SMS и данные SIM.</string>
-    <string name="prototype_debug_inexact">Режим прототипа: принимать неточную геолокацию</string>
-    <string name="prototype_debug_delay">Режим прототипа: задержать операцию на 10 с (проверка блокировки повторного запуска)</string>
     <string name="prototype_permission_denied_hint">Разрешение отклонено навсегда. Включите его вручную в настройках системы.</string>
     <string name="prototype_open_settings">Открыть настройки приложения</string>
 

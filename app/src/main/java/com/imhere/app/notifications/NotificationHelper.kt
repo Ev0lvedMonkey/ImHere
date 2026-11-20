@@ -75,6 +75,8 @@ object NotificationHelper {
             .setSmallIcon(R.drawable.ic_notification)
             .setContentTitle(context.getString(R.string.app_name))
             .setContentText(context.getString(R.string.notif_public_content))
+            .setAutoCancel(true)
+            .setContentIntent(openAppIntent(context))
             .build()
         val notification = Notification.Builder(context, CHANNEL_RESULT)
             .setSmallIcon(R.drawable.ic_notification)
