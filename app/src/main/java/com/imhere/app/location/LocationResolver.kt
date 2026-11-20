@@ -113,7 +113,12 @@ class LocationResolver(private val context: Context) {
             // Prefer the most accurate candidate; a fresh fix normally wins.
             val best = candidates.minBy { it.accuracy }
             val fix = toFix(best)
-            Log.i(TAG, "resolve: accepted fix $fix, elapsed=${elapsed(startedAt)}ms")
+            Log.i(
+                TAG,
+                "resolve: accepted fix, provider=${fix.provider} " +
+                    "accuracy=${fix.accuracyMeters} ageMs=${fix.ageMillis} " +
+                    "elapsed=${elapsed(startedAt)}ms",
+            )
             return LocationOutcome.Success(fix)
         }
 
@@ -136,7 +141,13 @@ class LocationResolver(private val context: Context) {
         } else {
             reason
         }
-        Log.w(TAG, "resolve: rejected, reason=$adjusted, bestAny=$bestAny")
+        Log.w(
+            TAG,
+            "resolve: rejected, reason=$adjusted, " +
+                "bestProvider=${bestAny?.provider} " +
+                "bestAccuracy=${bestAny?.let { if (it.hasAccuracy()) it.accuracy else null }} " +
+                "bestAgeMs=${bestAny?.let { ageMillis(it) }}",
+        )
         return failure(adjusted, startedAt)
     }
 
@@ -285,7 +296,7 @@ class LocationResolver(private val context: Context) {
         Log.i(
             TAG,
             "$label: provider=${location.provider} accuracy=${location.accuracy} " +
-                "ageMs=${ageMillis(location)} lat=${location.latitude} lon=${location.longitude}",
+                "ageMs=${ageMillis(location)}",
         )
     }
 

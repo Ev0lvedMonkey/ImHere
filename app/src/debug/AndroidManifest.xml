@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <application>
+        <!-- Debug-only diagnostics screen. Never merged into the release APK. -->
+        <activity
+            android:name=".ui.PrototypeActivity"
+            android:exported="false"
+            android:label="@string/prototype_title" />
+    </application>
+
+</manifest>

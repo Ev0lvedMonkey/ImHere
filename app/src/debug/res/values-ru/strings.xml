@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="prototype_title">ImHere — прототип виджета</string>
+    <string name="prototype_subtitle">Проверочная сборка SOS-виджета и SMS-движка. SOS-сценарий отправляет реальные SMS выбранным SOS-контактам.</string>
+    <string name="prototype_instructions">1. Выдайте разрешения.\n2. Добавьте виджет ImHere на рабочий стол (долгое нажатие на рабочем столе → Виджеты).\n3. Нажмите на виджет один раз, затем второй раз в течение 2 секунд.\n4. Смотрите уведомление и логи с тегами ImHerePrototype и ImHereSms.\n5. Кнопка SOS выше и виджет отправляют реальные SMS SOS-контактам. Тестовый блок SMS ниже по умолчанию имитирует отправку; номер, оканчивающийся на 0000, сообщает об ошибке отправки.</string>
+    <string name="prototype_permissions_status">Разрешение на геолокацию: %1$s\nТочное местоположение: %2$s\nРазрешение на уведомления: %3$s\nРазрешение на SMS: %4$s\nДоступ к данным SIM: %5$s\nСлужбы геолокации: %6$s\nСервисы Google Play: %7$s</string>
+    <string name="prototype_status_granted">выдано</string>
+    <string name="prototype_status_denied">не выдано</string>
+    <string name="prototype_status_approximate">только приблизительное</string>
+    <string name="prototype_status_enabled">включены</string>
+    <string name="prototype_status_disabled">выключены</string>
+    <string name="prototype_status_available">доступны</string>
+    <string name="prototype_status_unavailable">недоступны</string>
+    <string name="prototype_grant_permissions">Выдать разрешения</string>
+    <string name="prototype_run_test">Запустить полный SOS (реальные SMS)</string>
+    <string name="prototype_check_location">Получить геолокацию без SOS</string>
+    <string name="prototype_location_running">Получение геолокации…</string>
+    <string name="prototype_location_success">Широта: %1$.6f\nДолгота: %2$.6f\nТочность: ±%3$.0f м\nВозраст: %4$d с\nИсточник: %5$s\nАдрес: %6$s\nСсылка: %7$s</string>
+    <string name="prototype_location_failure">Подходящая геолокация не получена:\n%1$s</string>
+    <string name="prototype_location_no_address">не определён</string>
+    <string name="prototype_sms_section">Тест SMS</string>
+    <string name="prototype_sms_recipient_hint">Номер получателя</string>
+    <string name="prototype_sms_dry_run">Имитировать отправку (без реального SMS)</string>
+    <string name="prototype_sms_dry_run_hint">Номер, оканчивающийся на 0000, имитирует ошибку отправки. Отчёты о доставке тоже имитируются.</string>
+    <string name="prototype_send_test_sms">Отправить тестовое SMS</string>
+    <string name="prototype_sms_test_message">ImHere: тестовое SMS.</string>
+    <string name="prototype_sms_running">Отправка…</string>
+    <string name="prototype_sms_invalid_number">Введите корректный номер.</string>
+    <string name="prototype_sms_no_permission">Нужны разрешения на SMS и данные SIM.</string>
+    <string name="prototype_debug_inexact">Режим прототипа: принимать неточную геолокацию</string>
+    <string name="prototype_debug_delay">Режим прототипа: задержать операцию на 10 с (проверка блокировки повторного запуска)</string>
+    <string name="prototype_permission_denied_hint">Разрешение отклонено навсегда. Включите его вручную в настройках системы.</string>
+    <string name="prototype_open_settings">Открыть настройки приложения</string>
+
+</resources>

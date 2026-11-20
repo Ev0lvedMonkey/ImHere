@@ -61,8 +61,8 @@ object WidgetRenderer {
     }
 
     private fun tapIntent(context: Context, appWidgetId: Int): PendingIntent {
-        val intent = Intent(context, SosWidgetProvider::class.java)
-            .setAction(SosWidgetProvider.ACTION_TAP)
+        val intent = Intent(context, WidgetTapReceiver::class.java)
+            .setAction(WidgetTapReceiver.ACTION_TAP)
             .setData(Uri.parse("imhere://widget/$appWidgetId/tap"))
             .putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
         return PendingIntent.getBroadcast(

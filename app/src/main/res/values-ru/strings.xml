@@ -7,6 +7,7 @@
     <string name="common_cancel">Отмена</string>
     <string name="common_save">Сохранить</string>
     <string name="common_done">Готово</string>
+    <string name="permission_open_settings">Настройки приложения</string>
 
     <!-- Main screen -->
     <string name="main_sos">SOS</string>
@@ -92,7 +93,6 @@
     <string name="main_sim_no_sim">Нет SIM</string>
 
     <!-- SMS -->
-    <string name="sms_result_title">Результат отправки SMS</string>
     <string name="sms_result_line">%1$s: %2$s</string>
     <string name="sms_status_pending">ожидает отправки</string>
     <string name="sms_status_sent">отправлено оператору, ожидается подтверждение доставки</string>
@@ -132,39 +132,6 @@
     <string name="template_sample_map_link">https://www.google.com/maps/search/?api=1&amp;query=55.755800,37.617300</string>
     <string name="template_sample_time">18.11.2026 17:45</string>
 
-    <!-- Prototype screen -->
-    <string name="prototype_title">ImHere — прототип виджета</string>
-    <string name="prototype_subtitle">Проверочная сборка SOS-виджета и SMS-движка. SOS-сценарий отправляет реальные SMS выбранным SOS-контактам.</string>
-    <string name="prototype_instructions">1. Выдайте разрешения.\n2. Добавьте виджет ImHere на рабочий стол (долгое нажатие на рабочем столе → Виджеты).\n3. Нажмите на виджет один раз, затем второй раз в течение 2 секунд.\n4. Смотрите уведомление и логи с тегами ImHerePrototype и ImHereSms.\n5. Кнопка SOS выше и виджет отправляют реальные SMS SOS-контактам. Тестовый блок SMS ниже по умолчанию имитирует отправку; номер, оканчивающийся на 0000, сообщает об ошибке отправки.</string>
-    <string name="prototype_permissions_status">Разрешение на геолокацию: %1$s\nТочное местоположение: %2$s\nРазрешение на уведомления: %3$s\nРазрешение на SMS: %4$s\nДоступ к данным SIM: %5$s\nСлужбы геолокации: %6$s\nСервисы Google Play: %7$s</string>
-    <string name="prototype_status_granted">выдано</string>
-    <string name="prototype_status_denied">не выдано</string>
-    <string name="prototype_status_approximate">только приблизительное</string>
-    <string name="prototype_status_enabled">включены</string>
-    <string name="prototype_status_disabled">выключены</string>
-    <string name="prototype_status_available">доступны</string>
-    <string name="prototype_status_unavailable">недоступны</string>
-    <string name="prototype_grant_permissions">Выдать разрешения</string>
-    <string name="prototype_run_test">Запустить полный SOS (реальные SMS)</string>
-    <string name="prototype_check_location">Получить геолокацию без SOS</string>
-    <string name="prototype_location_running">Получение геолокации…</string>
-    <string name="prototype_location_success">Широта: %1$.6f\nДолгота: %2$.6f\nТочность: ±%3$.0f м\nВозраст: %4$d с\nИсточник: %5$s\nАдрес: %6$s\nСсылка: %7$s</string>
-    <string name="prototype_location_failure">Подходящая геолокация не получена:\n%1$s</string>
-    <string name="prototype_location_no_address">не определён</string>
-    <string name="prototype_sms_section">Тест SMS</string>
-    <string name="prototype_sms_recipient_hint">Номер получателя</string>
-    <string name="prototype_sms_dry_run">Имитировать отправку (без реального SMS)</string>
-    <string name="prototype_sms_dry_run_hint">Номер, оканчивающийся на 0000, имитирует ошибку отправки. Отчёты о доставке тоже имитируются.</string>
-    <string name="prototype_send_test_sms">Отправить тестовое SMS</string>
-    <string name="prototype_sms_test_message">ImHere: тестовое SMS.</string>
-    <string name="prototype_sms_running">Отправка…</string>
-    <string name="prototype_sms_invalid_number">Введите корректный номер.</string>
-    <string name="prototype_sms_no_permission">Нужны разрешения на SMS и данные SIM.</string>
-    <string name="prototype_debug_inexact">Режим прототипа: принимать неточную геолокацию</string>
-    <string name="prototype_debug_delay">Режим прототипа: задержать операцию на 10 с (проверка блокировки повторного запуска)</string>
-    <string name="prototype_permission_denied_hint">Разрешение отклонено навсегда. Включите его вручную в настройках системы.</string>
-    <string name="prototype_open_settings">Открыть настройки приложения</string>
-
     <!-- Notifications -->
     <string name="notif_channel_progress_name">Ход SOS</string>
     <string name="notif_channel_progress_description">Показывается во время выполнения SOS-операции.</string>
@@ -175,10 +142,9 @@
     <string name="notif_locating">Получение геолокации…</string>
     <string name="notif_sending">Отправка SMS…</string>
     <string name="notif_sms_sent_title">SMS отправлено</string>
+    <string name="notif_sms_pending_title">Статус SMS</string>
+    <string name="notif_public_content">Откройте ImHere, чтобы увидеть результат.</string>
     <string name="notif_no_recipients">Не выбраны SOS-контакты. Добавьте получателей в настройках.</string>
-    <string name="notif_success_title">Геолокация получена</string>
-    <string name="notif_success_text">%1$.5f, %2$.5f (±%3$.0f м)\nВозраст: %4$d с\nИсточник: %5$s</string>
-    <string name="notif_success_address">Адрес: %1$s</string>
     <string name="notif_failure_title">SOS не выполнен</string>
     <string name="notif_failure_title_plain">Не удалось отправить</string>
     <string name="notif_failure_permission">Нет разрешения на геолокацию.</string>
@@ -192,16 +158,12 @@
     <string name="notif_failure_unknown">Не удалось получить подходящую геолокацию.</string>
     <string name="notif_already_running">SOS уже выполняется.</string>
     <string name="notif_start_failed">Не удалось запустить фоновую SOS-службу.</string>
-    <string name="notif_debug_suffix"> (режим прототипа, точность не проверяется)</string>
-    <string name="notif_action_open_app">Открыть приложение</string>
-    <string name="notif_action_settings">Настройки приложения</string>
 
     <!-- Widget -->
     <string name="widget_title">SOS</string>
     <string name="widget_subtitle_idle">Двойное нажатие</string>
     <string name="widget_subtitle_waiting">Нажмите ещё раз</string>
     <string name="widget_subtitle_busy">Выполняется…</string>
-    <string name="widget_subtitle_error">Ошибка</string>
     <string name="widget_description">SOS-виджет: двойное нажатие запускает получение геолокации и экстренную операцию.</string>
     <string name="widget_content_description_idle">SOS. Нажмите дважды, чтобы запустить.</string>
     <string name="widget_content_description_waiting">SOS ожидает второе нажатие. Нажмите ещё раз.</string>

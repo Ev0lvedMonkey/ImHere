@@ -39,6 +39,7 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
@@ -88,6 +89,7 @@ fun MainScreen(
     val simPermissionMessage = stringResource(R.string.sms_rejection_sim_permission)
     val locationPermissionMessage = stringResource(R.string.notif_failure_permission)
     val fineLocationMessage = stringResource(R.string.notif_failure_fine_denied)
+    val openSettingsLabel = stringResource(R.string.permission_open_settings)
     var showSimDialog by remember { mutableStateOf(false) }
     var pendingMode by remember { mutableStateOf<SosMode?>(null) }
 
@@ -112,7 +114,23 @@ fun MainScreen(
                         fineLocationMessage
                     else -> locationPermissionMessage
                 }
-                scope.launch { snackbarHostState.showSnackbar(message) }
+                scope.launch {
+                    // Runtime permission dialogs stop at "don't ask again";
+                    // offer a direct route to the system settings instead.
+                    val result = snackbarHostState.showSnackbar(
+                        message = message,
+                        actionLabel = openSettingsLabel,
+                        withDismissAction = true,
+                    )
+                    if (result == SnackbarResult.ActionPerformed) {
+                        context.startActivity(
+                            Intent(
+                                Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+                                Uri.fromParts("package", context.packageName, null),
+                            ),
+                        )
+                    }
+                }
             }
         }
     }

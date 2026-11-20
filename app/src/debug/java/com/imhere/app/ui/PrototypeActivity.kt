@@ -185,7 +185,7 @@ class PrototypeActivity : ComponentActivity() {
                         outcome.reason.toUserMessage(this@PrototypeActivity),
                     )
                 }
-                Log.i(LOG_TAG, "location check: ${text.replace('\n', ' ')}")
+                Log.i(LOG_TAG, "location check finished: ${outcome::class.simpleName}")
                 locationResultView.text = text
             } catch (cancellation: CancellationException) {
                 throw cancellation
@@ -258,7 +258,7 @@ class PrototypeActivity : ComponentActivity() {
                         result.reason.toUserMessage(this@PrototypeActivity)
                 }
                 smsResultView.text = text
-                Log.i(LOG_TAG, "SMS test: ${text.replace('\n', ' ')}")
+                Log.i(LOG_TAG, "SMS test finished: ${result::class.simpleName}")
             } catch (cancellation: CancellationException) {
                 throw cancellation
             } catch (throwable: Throwable) {

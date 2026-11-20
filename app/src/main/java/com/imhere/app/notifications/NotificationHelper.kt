@@ -68,6 +68,14 @@ object NotificationHelper {
     fun showResult(context: Context, title: String, text: String, onlyAlertOnce: Boolean = false) {
         // On Android 13+ posting is silently dropped without the runtime permission.
         if (!canPost(context)) return
+        // The detailed result may contain recipient names and statuses, so it
+        // is hidden while the device is locked. Only the generic public
+        // version is shown on the lock screen.
+        val publicVersion = Notification.Builder(context, CHANNEL_RESULT)
+            .setSmallIcon(R.drawable.ic_notification)
+            .setContentTitle(context.getString(R.string.app_name))
+            .setContentText(context.getString(R.string.notif_public_content))
+            .build()
         val notification = Notification.Builder(context, CHANNEL_RESULT)
             .setSmallIcon(R.drawable.ic_notification)
             .setContentTitle(title)
@@ -76,6 +84,8 @@ object NotificationHelper {
             .setAutoCancel(true)
             .setOnlyAlertOnce(onlyAlertOnce)
             .setCategory(Notification.CATEGORY_STATUS)
+            .setVisibility(Notification.VISIBILITY_PRIVATE)
+            .setPublicVersion(publicVersion)
             .setContentIntent(openAppIntent(context))
             .build()
         NotificationManagerCompat.from(context).notify(RESULT_NOTIFICATION_ID, notification)

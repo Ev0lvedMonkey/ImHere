@@ -21,6 +21,9 @@ object MessageTemplate {
     private val repeatedSpaces = Regex("[ \\t]{2,}")
     private val separatorsOnly = Regex("^[\\s,;:.\\-–—/()]*$")
 
+    /** True when [template] actually uses `{address}`. */
+    fun containsAddress(template: String): Boolean = template.contains("{$ADDRESS}")
+
     fun render(template: String, values: Map<String, String?>): String {
         var text = template
         values.forEach { (key, value) ->

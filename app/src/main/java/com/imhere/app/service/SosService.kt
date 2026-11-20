@@ -27,7 +27,6 @@ import com.imhere.app.sms.SmsSendResult
 import com.imhere.app.sms.SmsSnapshot
 import com.imhere.app.sms.SmsOperationRegistry
 import com.imhere.app.sms.resolveSimAvailability
-import com.imhere.app.ui.PrototypeSettings
 import com.imhere.app.ui.toResultText
 import com.imhere.app.ui.toUserMessage
 import com.imhere.app.util.MessageTemplate
@@ -41,7 +40,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeoutOrNull
@@ -128,6 +126,9 @@ class SosService : Service() {
         }
 
         currentMode = mode
+        // A new operation owns the result notification from now on. Late
+        // reports from a previous operation must not overwrite its outcome.
+        latestNotificationToken.set(null)
         WidgetStateStore.setOperationActive(this, true)
         WidgetRenderer.updateAll(this)
         acquireWakeLock()
@@ -183,34 +184,39 @@ class SosService : Service() {
             return false
         }
 
-        val acceptInexact = PrototypeSettings.acceptInexactLocation(this)
-        val artificialDelay = PrototypeSettings.artificialDelayMillis(this)
-        if (artificialDelay > 0L) {
-            Log.i(TAG, "prototype: holding the operation for ${artificialDelay}ms")
-            delay(artificialDelay)
-        }
+        val template = templateFor(mode, state.sosTemplate, state.plainTemplate)
 
         NotificationHelper.updateProgress(this, getString(R.string.notif_locating))
-        val outcome = resolver.resolve(acceptInexact)
-        val suffix = if (acceptInexact) getString(R.string.notif_debug_suffix) else ""
+        val outcome = resolver.resolve()
 
         when (outcome) {
             is LocationOutcome.Failure -> {
                 Log.w(TAG, "SOS location failure: ${outcome.reason}")
-                notifyFailure(outcome.reason.toUserMessage(this) + suffix, mode)
+                notifyFailure(outcome.reason.toUserMessage(this), mode)
                 return false
             }
 
             is LocationOutcome.Success -> {
                 val fix = outcome.fix
-                Log.i(TAG, "SOS location success: $fix")
+                Log.i(
+                    TAG,
+                    "SOS location success: provider=${fix.provider} " +
+                        "accuracy=${fix.accuracyMeters} ageMs=${fix.ageMillis}",
+                )
 
-                val address = withTimeoutOrNull(ADDRESS_TIMEOUT_MS) {
-                    AddressResolver(this@SosService).resolve(fix.latitude, fix.longitude)
+                // Reverse geocoding is optional and is skipped entirely unless
+                // the selected template actually uses the address. This keeps
+                // coordinates away from the platform geocoder by default.
+                val address = if (MessageTemplate.containsAddress(template)) {
+                    withTimeoutOrNull(ADDRESS_TIMEOUT_MS) {
+                        AddressResolver(this@SosService).resolve(fix.latitude, fix.longitude)
+                    }
+                } else {
+                    null
                 }
-                Log.i(TAG, "SOS address: ${address ?: "not available"}")
+                Log.i(TAG, "SOS address requested=${MessageTemplate.containsAddress(template)}")
 
-                val message = buildMessage(mode, state.sosTemplate, state.plainTemplate, fix, address)
+                val message = buildMessage(template, fix, address)
                 if (message.isBlank()) {
                     Log.w(TAG, "SOS aborted: rendered message is empty")
                     notifyFailure(getString(R.string.sms_rejection_empty_message), mode)
@@ -218,7 +224,6 @@ class SosService : Service() {
                 }
 
                 NotificationHelper.updateProgress(this, getString(R.string.notif_sending))
-                val notificationText = if (suffix.isBlank()) message else message + "\n" + suffix
                 val appContext = applicationContext
                 val result = AppGraph.sms.send(
                     selectedSubscriptionId = state.selectedSubscriptionId,
@@ -231,7 +236,6 @@ class SosService : Service() {
                             showSmsNotification(
                                 context = appContext,
                                 snapshot = snapshot,
-                                message = notificationText,
                                 mode = mode,
                                 onlyAlertOnce = true,
                             )
@@ -249,21 +253,26 @@ class SosService : Service() {
                         showSmsNotification(
                             context = this,
                             snapshot = current,
-                            message = notificationText,
                             mode = mode,
                             onlyAlertOnce = false,
                         )
                         Log.i(
                             TAG,
-                            "SOS SMS finished: " +
-                                current.recipients.joinToString { "${it.name}=${it.state}" },
+                            "SOS SMS finished: " + current.recipients
+                                .groupingBy { it.state }
+                                .eachCount()
+                                .entries
+                                .joinToString { (state, count) -> "$state=$count" },
                         )
-                        return !current.hasFailures
+                        // A "sent" report only means "accepted by the
+                        // operator". Do not start the cooldown or claim
+                        // success while any recipient is still pending.
+                        return !current.hasFailures && !current.hasPending
                     }
 
                     is SmsSendResult.Rejected -> {
                         Log.w(TAG, "SOS SMS rejected: ${result.reason}")
-                        notifyFailure(result.reason.toUserMessage(this), mode, notificationText)
+                        notifyFailure(result.reason.toUserMessage(this), mode)
                         return false
                     }
                 }
@@ -271,13 +280,16 @@ class SosService : Service() {
         }
     }
 
-    private fun buildMessage(
+    private fun templateFor(
         mode: SosMode,
         sosTemplate: String?,
         plainTemplate: String?,
-        fix: LocationFix,
-        address: String?,
-    ): String {
+    ): String = when (mode) {
+        SosMode.SOS -> sosTemplate ?: getString(R.string.sos_template_default)
+        SosMode.LOCATION -> plainTemplate ?: getString(R.string.plain_template_default)
+    }
+
+    private fun buildMessage(template: String, fix: LocationFix, address: String?): String {
         val acquiredAt = System.currentTimeMillis() - fix.ageMillis
         val values = MessageValues.forLocation(
             latitude = fix.latitude,
@@ -285,16 +297,11 @@ class SosService : Service() {
             address = address,
             acquiredAtMillis = acquiredAt,
         )
-        val template = when (mode) {
-            SosMode.SOS -> sosTemplate ?: getString(R.string.sos_template_default)
-            SosMode.LOCATION -> plainTemplate ?: getString(R.string.plain_template_default)
-        }
         return MessageTemplate.render(template, values)
     }
 
-    private fun notifyFailure(message: String, mode: SosMode, details: String? = null) {
-        val text = if (details.isNullOrBlank()) message else details + "\n\n" + message
-        NotificationHelper.showResult(this, failureTitle(this, mode), text)
+    private fun notifyFailure(message: String, mode: SosMode) {
+        NotificationHelper.showResult(this, failureTitle(this, mode), message)
     }
 
     override fun onDestroy() {
@@ -401,15 +408,16 @@ private fun failureTitle(context: Context, mode: SosMode): String = context.getS
 private fun showSmsNotification(
     context: Context,
     snapshot: SmsSnapshot,
-    message: String,
     mode: SosMode,
     onlyAlertOnce: Boolean,
 ) {
-    val title = if (snapshot.hasFailures) {
-        failureTitle(context, mode)
-    } else {
-        context.getString(R.string.notif_sms_sent_title)
+    val title = when {
+        snapshot.hasFailures -> failureTitle(context, mode)
+        snapshot.hasPending -> context.getString(R.string.notif_sms_pending_title)
+        else -> context.getString(R.string.notif_sms_sent_title)
     }
-    val text = message + "\n\n" + snapshot.toResultText(context)
-    NotificationHelper.showResult(context, title, text, onlyAlertOnce)
+    // The message body (coordinates, map link, address) is deliberately not
+    // repeated in the notification: the status list is enough to act on, and
+    // the notification may be visible on the lock screen.
+    NotificationHelper.showResult(context, title, snapshot.toResultText(context), onlyAlertOnce)
 }

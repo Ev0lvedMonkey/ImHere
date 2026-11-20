@@ -1,6 +1,8 @@
 package com.imhere.app.util
 
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class MessageTemplateTest {
@@ -40,6 +42,12 @@ class MessageTemplateTest {
             "SOS\nhttps://www.google.com/maps/search/?api=1&query=55.755800,37.617300",
             MessageTemplate.render(template, coordinates),
         )
+    }
+
+    @Test
+    fun `detects whether a template uses the address`() {
+        assertTrue(MessageTemplate.containsAddress("Address: {address}"))
+        assertFalse(MessageTemplate.containsAddress("I am here: {latitude}, {longitude}"))
     }
 
     @Test

@@ -7,6 +7,7 @@
     <string name="common_cancel">Cancel</string>
     <string name="common_save">Save</string>
     <string name="common_done">Done</string>
+    <string name="permission_open_settings">App settings</string>
 
     <!-- Main screen -->
     <string name="main_sos">SOS</string>
@@ -92,7 +93,6 @@
     <string name="main_sim_no_sim">No SIM</string>
 
     <!-- SMS -->
-    <string name="sms_result_title">SMS result</string>
     <string name="sms_result_line">%1$s: %2$s</string>
     <string name="sms_status_pending">waiting to be sent</string>
     <string name="sms_status_sent">sent to the operator, awaiting delivery confirmation</string>
@@ -132,39 +132,6 @@
     <string name="template_sample_map_link">https://www.google.com/maps/search/?api=1&amp;query=55.755800,37.617300</string>
     <string name="template_sample_time">18.11.2026 17:45</string>
 
-    <!-- Prototype screen -->
-    <string name="prototype_title">ImHere — widget prototype</string>
-    <string name="prototype_subtitle">Verification build for the SOS widget and the SMS engine. The SOS pipeline sends real SMS to the selected SOS contacts.</string>
-    <string name="prototype_instructions">1. Grant permissions.\n2. Add the ImHere widget to the home screen (long press on the home screen → Widgets).\n3. Tap the widget once, then a second time within 2 seconds.\n4. Watch the notification and the Logcat tags ImHerePrototype and ImHereSms.\n5. The SOS button above and the widget send real SMS to SOS contacts. The SMS test section below simulates sending by default; a number ending in 0000 reports a send error.</string>
-    <string name="prototype_permissions_status">Location permission: %1$s\nPrecise location: %2$s\nNotification permission: %3$s\nSMS permission: %4$s\nSIM data permission: %5$s\nLocation services: %6$s\nGoogle Play services: %7$s</string>
-    <string name="prototype_status_granted">granted</string>
-    <string name="prototype_status_denied">not granted</string>
-    <string name="prototype_status_approximate">approximate only</string>
-    <string name="prototype_status_enabled">enabled</string>
-    <string name="prototype_status_disabled">disabled</string>
-    <string name="prototype_status_available">available</string>
-    <string name="prototype_status_unavailable">not available</string>
-    <string name="prototype_grant_permissions">Grant permissions</string>
-    <string name="prototype_run_test">Run full SOS (sends real SMS)</string>
-    <string name="prototype_check_location">Get a location fix (no SOS)</string>
-    <string name="prototype_location_running">Requesting a location fix…</string>
-    <string name="prototype_location_success">Latitude: %1$.6f\nLongitude: %2$.6f\nAccuracy: ±%3$.0f m\nAge: %4$d s\nSource: %5$s\nAddress: %6$s\nLink: %7$s</string>
-    <string name="prototype_location_failure">No suitable fix:\n%1$s</string>
-    <string name="prototype_location_no_address">not available</string>
-    <string name="prototype_sms_section">SMS test</string>
-    <string name="prototype_sms_recipient_hint">Recipient number</string>
-    <string name="prototype_sms_dry_run">Simulate sending (no real SMS)</string>
-    <string name="prototype_sms_dry_run_hint">A number ending in 0000 simulates a send error. Delivery reports are simulated too.</string>
-    <string name="prototype_send_test_sms">Send a test SMS</string>
-    <string name="prototype_sms_test_message">ImHere: SMS test message.</string>
-    <string name="prototype_sms_running">Sending…</string>
-    <string name="prototype_sms_invalid_number">Enter a valid phone number.</string>
-    <string name="prototype_sms_no_permission">SMS and SIM permissions are required.</string>
-    <string name="prototype_debug_inexact">Prototype mode: accept low-accuracy location</string>
-    <string name="prototype_debug_delay">Prototype mode: hold the operation for 10 s (checks the repeated-tap lock)</string>
-    <string name="prototype_permission_denied_hint">Permission denied permanently. Open the system settings to enable it manually.</string>
-    <string name="prototype_open_settings">Open app settings</string>
-
     <!-- Notifications -->
     <string name="notif_channel_progress_name">SOS progress</string>
     <string name="notif_channel_progress_description">Shown while the SOS operation is running.</string>
@@ -175,10 +142,9 @@
     <string name="notif_locating">Getting your location…</string>
     <string name="notif_sending">Sending SMS…</string>
     <string name="notif_sms_sent_title">SMS sent</string>
+    <string name="notif_sms_pending_title">SMS status</string>
+    <string name="notif_public_content">Open ImHere to see the result.</string>
     <string name="notif_no_recipients">No SOS contacts selected. Add recipients in Settings.</string>
-    <string name="notif_success_title">Location received</string>
-    <string name="notif_success_text">%1$.5f, %2$.5f (±%3$.0f m)\nAge: %4$d s\nSource: %5$s</string>
-    <string name="notif_success_address">Address: %1$s</string>
     <string name="notif_failure_title">SOS failed</string>
     <string name="notif_failure_title_plain">Sending failed</string>
     <string name="notif_failure_permission">Location permission is not granted.</string>
@@ -192,16 +158,12 @@
     <string name="notif_failure_unknown">Could not get a suitable location.</string>
     <string name="notif_already_running">SOS is already running.</string>
     <string name="notif_start_failed">Could not start the background SOS service.</string>
-    <string name="notif_debug_suffix"> (prototype mode, accuracy unchecked)</string>
-    <string name="notif_action_open_app">Open app</string>
-    <string name="notif_action_settings">App settings</string>
 
     <!-- Widget -->
     <string name="widget_title">SOS</string>
     <string name="widget_subtitle_idle">Double tap</string>
     <string name="widget_subtitle_waiting">Tap again</string>
     <string name="widget_subtitle_busy">Working…</string>
-    <string name="widget_subtitle_error">Error</string>
     <string name="widget_description">SOS widget: double tap to get your location and start the emergency operation.</string>
     <string name="widget_content_description_idle">SOS. Double tap to start.</string>
     <string name="widget_content_description_waiting">SOS is waiting for the second tap. Tap again now.</string>

@@ -59,12 +59,14 @@ import com.imhere.app.data.model.AppState
 import com.imhere.app.data.model.Contact
 import com.imhere.app.sms.SimAvailability
 import com.imhere.app.sms.resolveSimAvailability
-import com.imhere.app.ui.PrototypeActivity
 import com.imhere.app.ui.sim.SimPickerDialog
 import com.imhere.app.ui.sim.displayLabel
 import com.imhere.app.util.MessageTemplate
 
 private const val LANGUAGE_SYSTEM = ""
+
+/** Present only in the debug variant; the release APK has no such activity. */
+private const val PROTOTYPE_ACTIVITY = "com.imhere.app.ui.PrototypeActivity"
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -195,7 +197,7 @@ fun SettingsScreen(
                         subtitle = stringResource(R.string.settings_diagnostics_hint),
                         onClick = {
                             context.startActivity(
-                                Intent(context, PrototypeActivity::class.java),
+                                Intent().setClassName(context, PROTOTYPE_ACTIVITY),
                             )
                         },
                     )

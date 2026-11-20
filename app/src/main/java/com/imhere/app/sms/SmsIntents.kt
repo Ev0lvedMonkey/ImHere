@@ -3,6 +3,7 @@ package com.imhere.app.sms
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Build
 import android.telephony.SmsManager
 import java.util.concurrent.atomic.AtomicInteger
@@ -37,6 +38,15 @@ internal object SmsIntents {
     ): PendingIntent {
         val intent = Intent(context, SmsStatusReceiver::class.java)
             .setAction(action)
+            // Extras do not participate in PendingIntent identity; the data URI
+            // does, so reports from different operations/parts can never
+            // collide even if the process restarts and reuses a request code.
+            .setData(
+                Uri.parse(
+                    "imhere://sms/$action/$token/$recipient/$part/" +
+                        requestCode.get(),
+                ),
+            )
             .putExtra(EXTRA_TOKEN, token)
             .putExtra(EXTRA_RECIPIENT, recipient)
             .putExtra(EXTRA_PART, part)

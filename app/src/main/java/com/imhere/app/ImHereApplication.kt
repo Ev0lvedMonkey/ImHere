@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.Context
 import com.imhere.app.data.AppStateStore
 import com.imhere.app.data.SettingsRepository
+import com.imhere.app.notifications.NotificationHelper
 import com.imhere.app.sms.AndroidSmsTransport
 import com.imhere.app.sms.SimManager
 import com.imhere.app.sms.SmsDispatcher
@@ -15,6 +16,9 @@ import kotlinx.coroutines.SupervisorJob
 class ImHereApplication : Application() {
     override fun onCreate() {
         super.onCreate()
+        // Channels must exist before any component (for example the widget
+        // receiver) can post a result notification.
+        NotificationHelper.ensureChannels(this)
         AppGraph.init(this)
     }
 }

@@ -1,8 +1,8 @@
 # ImHere
 
 ImHere is an Android app for quickly sharing your location with a few trusted
-contacts via SMS. It needs no account, server, or internet connection: coordinates
-are resolved on the device and sent only to the recipients you choose.
+contacts via SMS. The app itself needs no account, server, or internet connection:
+coordinates are resolved on the device and sent only to the recipients you choose.
 
 The main scenario is the home-screen SOS widget: tap it twice and ImHere obtains
 a fresh location fix and sends the SMS without opening the app.
@@ -29,7 +29,8 @@ Requires Android 8.0 (API 26) or newer, an active SIM card, and location service
 Before sending, ImHere checks permissions, SOS contacts, and the selected SIM.
 It requests a fresh location fix for up to 20 seconds and accepts only a fix that
 is at most 30 seconds old with accuracy of 100 m or better. If no suitable fix is
-available, no SMS is sent. Reverse geocoding is optional and limited to 2 seconds.
+available, no SMS is sent. If the template contains `{address}`, reverse
+geocoding is attempted for up to 2 seconds; otherwise it is skipped entirely.
 Each recipient receives a separate SMS, and the result notification shows the
 status per recipient. Delivery reports depend on the carrier and are best effort.
 
@@ -62,7 +63,10 @@ which is not tracked by Git.
 ## Privacy
 
 - Contacts, templates, and the selected SIM are stored on the device only.
-- Location is never sent to a third-party server.
+- ImHere has no server and no internet permission. Coordinates leave the device
+  only in the SMS you send. If a template uses `{address}`, the system `Geocoder`
+  may send the coordinates to your device's geocoding provider (often Google);
+  templates without `{address}` never use the geocoder.
 - No SOS or movement history is stored.
 - The widget's double-tap state is kept in `SharedPreferences` and is not history.
 

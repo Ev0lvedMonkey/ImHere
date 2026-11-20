@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="prototype_title">ImHere — widget prototype</string>
+    <string name="prototype_subtitle">Verification build for the SOS widget and the SMS engine. The SOS pipeline sends real SMS to the selected SOS contacts.</string>
+    <string name="prototype_instructions">1. Grant permissions.\n2. Add the ImHere widget to the home screen (long press on the home screen → Widgets).\n3. Tap the widget once, then a second time within 2 seconds.\n4. Watch the notification and the Logcat tags ImHerePrototype and ImHereSms.\n5. The SOS button above and the widget send real SMS to SOS contacts. The SMS test section below simulates sending by default; a number ending in 0000 reports a send error.</string>
+    <string name="prototype_permissions_status">Location permission: %1$s\nPrecise location: %2$s\nNotification permission: %3$s\nSMS permission: %4$s\nSIM data permission: %5$s\nLocation services: %6$s\nGoogle Play services: %7$s</string>
+    <string name="prototype_status_granted">granted</string>
+    <string name="prototype_status_denied">not granted</string>
+    <string name="prototype_status_approximate">approximate only</string>
+    <string name="prototype_status_enabled">enabled</string>
+    <string name="prototype_status_disabled">disabled</string>
+    <string name="prototype_status_available">available</string>
+    <string name="prototype_status_unavailable">not available</string>
+    <string name="prototype_grant_permissions">Grant permissions</string>
+    <string name="prototype_run_test">Run full SOS (sends real SMS)</string>
+    <string name="prototype_check_location">Get a location fix (no SOS)</string>
+    <string name="prototype_location_running">Requesting a location fix…</string>
+    <string name="prototype_location_success">Latitude: %1$.6f\nLongitude: %2$.6f\nAccuracy: ±%3$.0f m\nAge: %4$d s\nSource: %5$s\nAddress: %6$s\nLink: %7$s</string>
+    <string name="prototype_location_failure">No suitable fix:\n%1$s</string>
+    <string name="prototype_location_no_address">not available</string>
+    <string name="prototype_sms_section">SMS test</string>
+    <string name="prototype_sms_recipient_hint">Recipient number</string>
+    <string name="prototype_sms_dry_run">Simulate sending (no real SMS)</string>
+    <string name="prototype_sms_dry_run_hint">A number ending in 0000 simulates a send error. Delivery reports are simulated too.</string>
+    <string name="prototype_send_test_sms">Send a test SMS</string>
+    <string name="prototype_sms_test_message">ImHere: SMS test message.</string>
+    <string name="prototype_sms_running">Sending…</string>
+    <string name="prototype_sms_invalid_number">Enter a valid phone number.</string>
+    <string name="prototype_sms_no_permission">SMS and SIM permissions are required.</string>
+    <string name="prototype_debug_inexact">Prototype mode: accept low-accuracy location</string>
+    <string name="prototype_debug_delay">Prototype mode: hold the operation for 10 s (checks the repeated-tap lock)</string>
+    <string name="prototype_permission_denied_hint">Permission denied permanently. Open the system settings to enable it manually.</string>
+    <string name="prototype_open_settings">Open app settings</string>
+
+</resources>

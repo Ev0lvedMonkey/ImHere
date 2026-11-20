@@ -52,6 +52,10 @@ data class SmsSnapshot(
             it.state == SmsRecipientState.FAILED || it.state == SmsRecipientState.NOT_DELIVERED
         }
 
+    /** True while at least one recipient has no sent report yet. */
+    val hasPending: Boolean
+        get() = recipients.any { it.state == SmsRecipientState.PENDING }
+
     val allDelivered: Boolean
         get() = recipients.isNotEmpty() && recipients.all { it.state == SmsRecipientState.DELIVERED }
 }

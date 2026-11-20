@@ -52,15 +52,21 @@ class SettingsRepository(
         isSos: Boolean,
     ) {
         update { current ->
+            // The uniqueness check in the UI reads a cached state. Enforce it
+            // again inside the atomic update so a concurrent save cannot leave
+            // two contacts with the same number (and thus duplicate SOS SMS).
+            val withoutDuplicate = current.contacts.filterNot { contact ->
+                contact.id != existingId && contact.phoneE164 == phoneE164
+            }
             val contacts = if (existingId == null) {
-                current.contacts + Contact(
+                withoutDuplicate + Contact(
                     id = UUID.randomUUID().toString(),
                     name = name,
                     phoneE164 = phoneE164,
                     isSos = isSos,
                 )
             } else {
-                current.contacts.map { contact ->
+                withoutDuplicate.map { contact ->
                     if (contact.id == existingId) {
                         contact.copy(name = name, phoneE164 = phoneE164, isSos = isSos)
                     } else {

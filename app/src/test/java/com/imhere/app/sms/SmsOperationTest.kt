@@ -34,6 +34,7 @@ class SmsOperationTest {
         assertEquals(SmsRecipientState.SENT, snapshot.recipients.single().state)
         assertTrue(snapshot.sendingComplete)
         assertFalse(snapshot.hasFailures)
+        assertFalse(snapshot.hasPending)
         assertFalse(snapshot.allDelivered)
     }
 
@@ -100,6 +101,8 @@ class SmsOperationTest {
         assertEquals(1, snapshot.recipients.single().partsSent)
         assertEquals(2, snapshot.recipients.single().partsTotal)
         assertFalse(snapshot.sendingComplete)
+        assertTrue(snapshot.hasPending)
+        assertFalse(snapshot.hasFailures)
     }
 
     @Test
