@@ -1,22 +1,22 @@
 package com.imhere.app.widget
 
 import android.content.Context
-import android.os.SystemClock
 
 /**
  * Persists the small piece of technical state needed by the widget double tap.
  * This is not user history: only the last tap timestamp, the busy flag and the
  * cooldown deadline are stored, and only to guard the launch itself.
+ *
+ * Every timestamp is wall-clock time. `SystemClock.elapsedRealtime()` resets on
+ * reboot, which used to leave the widget blocked for the previous uptime (or,
+ * worse, a stale "busy" flag could look fresh again) after a restart.
  */
 object WidgetStateStore {
 
     private const val PREFS_NAME = "widget_state"
-    private const val KEY_LAST_TAP = "last_tap_elapsed"
+    private const val KEY_LAST_TAP = "last_tap_wall"
     private const val KEY_OPERATION_ACTIVE = "operation_active"
-    private const val KEY_OPERATION_STARTED = "operation_started_elapsed"
-
-    // Wall-clock time: elapsedRealtime() is reset by a reboot, which used to
-    // leave the widget blocked for the previous uptime after a restart.
+    private const val KEY_OPERATION_STARTED = "operation_started_wall"
     private const val KEY_COOLDOWN_UNTIL = "cooldown_until_wall"
 
     const val DOUBLE_TAP_WINDOW_MS = 2_000L
@@ -34,16 +34,16 @@ object WidgetStateStore {
     @Synchronized
     fun onTap(context: Context): TapResult {
         val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
-        val now = SystemClock.elapsedRealtime()
+        val now = System.currentTimeMillis()
 
         if (isActiveLocked(prefs, now)) {
             return TapResult.BUSY
         }
-        clearStaleOperationLocked(prefs)
+        clearStaleOperationLocked(prefs, now)
 
         // Right after a successful operation the widget ignores taps for a few
         // seconds so an accidental extra tap cannot send a second message.
-        if (isCoolingDownLocked(prefs, System.currentTimeMillis())) {
+        if (isCoolingDownLocked(prefs, now)) {
             prefs.edit().putLong(KEY_LAST_TAP, 0L).apply()
             return TapResult.COOLDOWN
         }
@@ -65,10 +65,11 @@ object WidgetStateStore {
     @Synchronized
     fun hasPendingSecondTap(context: Context): Boolean {
         val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
-        if (isActiveLocked(prefs, SystemClock.elapsedRealtime())) return false
+        val now = System.currentTimeMillis()
+        if (isActiveLocked(prefs, now)) return false
         val lastTap = prefs.getLong(KEY_LAST_TAP, 0L)
         if (lastTap <= 0L) return false
-        return SystemClock.elapsedRealtime() - lastTap in 0..DOUBLE_TAP_WINDOW_MS
+        return now - lastTap in 0..DOUBLE_TAP_WINDOW_MS
     }
 
     @Synchronized
@@ -76,7 +77,10 @@ object WidgetStateStore {
         val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
         prefs.edit()
             .putBoolean(KEY_OPERATION_ACTIVE, active)
-            .putLong(KEY_OPERATION_STARTED, if (active) SystemClock.elapsedRealtime() else 0L)
+            .putLong(
+                KEY_OPERATION_STARTED,
+                if (active) System.currentTimeMillis() else 0L,
+            )
             .apply()
     }
 
@@ -84,8 +88,9 @@ object WidgetStateStore {
     @Synchronized
     fun isOperationActive(context: Context): Boolean {
         val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
-        val active = isActiveLocked(prefs, SystemClock.elapsedRealtime())
-        if (!active) clearStaleOperationLocked(prefs)
+        val now = System.currentTimeMillis()
+        val active = isActiveLocked(prefs, now)
+        if (!active) clearStaleOperationLocked(prefs, now)
         return active
     }
 
@@ -110,13 +115,17 @@ object WidgetStateStore {
     ): Boolean {
         if (!prefs.getBoolean(KEY_OPERATION_ACTIVE, false)) return false
         val started = prefs.getLong(KEY_OPERATION_STARTED, 0L)
-        val age = now - started
-        return started > 0L && age in 0..STALE_OPERATION_MS
+        if (started <= 0L) return false
+        // A start time in the future (clock moved backwards) is not reliable.
+        return now - started in 0..STALE_OPERATION_MS
     }
 
-    private fun clearStaleOperationLocked(prefs: android.content.SharedPreferences) {
+    private fun clearStaleOperationLocked(
+        prefs: android.content.SharedPreferences,
+        now: Long,
+    ) {
         if (!prefs.getBoolean(KEY_OPERATION_ACTIVE, false)) return
-        if (isActiveLocked(prefs, SystemClock.elapsedRealtime())) return
+        if (isActiveLocked(prefs, now)) return
         // A previous operation died without clearing the flag.
         prefs.edit()
             .putBoolean(KEY_OPERATION_ACTIVE, false)

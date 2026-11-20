@@ -37,10 +37,6 @@ import java.util.concurrent.atomic.AtomicReference
  *
  * The fused provider is used when Google Play Services is available, otherwise
  * the platform [LocationManager] with all enabled providers (GPS and network).
- *
- * Prototype note: [acceptInexact] disables only the accuracy check and is used
- * for indoor verification of the widget pipeline. It is never enabled by the
- * real SOS flow.
  */
 class LocationResolver(private val context: Context) {
 
@@ -69,7 +65,7 @@ class LocationResolver(private val context: Context) {
         GoogleApiAvailability.getInstance()
             .isGooglePlayServicesAvailable(context) == ConnectionResult.SUCCESS
 
-    suspend fun resolve(acceptInexact: Boolean = false): LocationOutcome {
+    suspend fun resolve(): LocationOutcome {
         val startedAt = SystemClock.elapsedRealtime()
         if (!hasLocationPermission()) {
             Log.w(TAG, "resolve: location permission is missing")
@@ -94,10 +90,10 @@ class LocationResolver(private val context: Context) {
         val newFix = try {
             if (isPlayServicesAvailable()) {
                 Log.i(TAG, "resolve: using FusedLocationProviderClient")
-                requestFusedFix(acceptInexact)
+                requestFusedFix()
             } else {
                 Log.i(TAG, "resolve: Google Play services unavailable, using LocationManager")
-                requestPlatformFix(acceptInexact)
+                requestPlatformFix()
             }
         } catch (securityException: SecurityException) {
             Log.e(TAG, "resolve: SecurityException while requesting location", securityException)
@@ -108,7 +104,7 @@ class LocationResolver(private val context: Context) {
         }
         logLocation("newFix", newFix)
 
-        val candidates = listOfNotNull(newFix, lastKnown).filter { isValidNow(it, acceptInexact) }
+        val candidates = listOfNotNull(newFix, lastKnown).filter { isValidNow(it) }
         if (candidates.isNotEmpty()) {
             // Prefer the most accurate candidate; a fresh fix normally wins.
             val best = candidates.minBy { it.accuracy }
@@ -128,7 +124,7 @@ class LocationResolver(private val context: Context) {
             all.isEmpty() -> LocationFailure.NoFix
             all.none { it.hasAccuracy() } -> LocationFailure.LowAccuracy(null)
             bestAny != null && bestAny.hasAccuracy() &&
-                bestAny.accuracy > MAX_ACCURACY_METERS && !acceptInexact ->
+                bestAny.accuracy > MAX_ACCURACY_METERS ->
                 LocationFailure.LowAccuracy(bestAny.accuracy)
 
             bestAny != null && ageMillis(bestAny) > MAX_AGE_MILLIS -> LocationFailure.Stale
@@ -152,7 +148,7 @@ class LocationResolver(private val context: Context) {
     }
 
     @SuppressLint("MissingPermission")
-    private suspend fun requestFusedFix(acceptInexact: Boolean): Location? {
+    private suspend fun requestFusedFix(): Location? {
         val client = LocationServices.getFusedLocationProviderClient(context)
 
         val request = LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, UPDATE_INTERVAL_MS)
@@ -182,13 +178,13 @@ class LocationResolver(private val context: Context) {
         }
 
         val fresh = withTimeoutOrNull(TIMEOUT_MS) {
-            fixes.first { location -> isAcceptable(location, acceptInexact) }
+            fixes.first { location -> isAcceptable(location) }
         }
         return fresh ?: bestRef.get()
     }
 
     @SuppressLint("MissingPermission")
-    private suspend fun requestPlatformFix(acceptInexact: Boolean): Location? {
+    private suspend fun requestPlatformFix(): Location? {
         val manager = locationManager ?: return null
         val providers = listOf(LocationManager.GPS_PROVIDER, LocationManager.NETWORK_PROVIDER)
             .filter { provider -> isProviderEnabled(manager, provider) }
@@ -228,7 +224,7 @@ class LocationResolver(private val context: Context) {
         }
 
         val fresh = withTimeoutOrNull(TIMEOUT_MS) {
-            fixes.first { location -> isAcceptable(location, acceptInexact) }
+            fixes.first { location -> isAcceptable(location) }
         }
         return fresh ?: bestRef.get()
     }
@@ -248,14 +244,14 @@ class LocationResolver(private val context: Context) {
             .maxByOrNull { it.elapsedRealtimeNanos }
     }
 
-    private fun isAcceptable(location: Location, acceptInexact: Boolean): Boolean =
+    private fun isAcceptable(location: Location): Boolean =
         location.hasAccuracy() &&
             ageMillis(location) <= MAX_AGE_MILLIS &&
-            (acceptInexact || location.accuracy <= MAX_ACCURACY_METERS)
+            location.accuracy <= MAX_ACCURACY_METERS
 
-    private fun isValidNow(location: Location, acceptInexact: Boolean): Boolean {
+    private fun isValidNow(location: Location): Boolean {
         if (!location.hasAccuracy()) return false
-        if (!acceptInexact && location.accuracy > MAX_ACCURACY_METERS) return false
+        if (location.accuracy > MAX_ACCURACY_METERS) return false
         val age = ageMillis(location)
         return age >= 0 && age <= MAX_AGE_MILLIS
     }
