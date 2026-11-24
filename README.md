@@ -22,9 +22,14 @@ Requires Android 8.0 (API 26) or newer, an active SIM card, and location service
 - SIM selection; the app never switches SIMs automatically.
 - Templates with `{address}`, `{latitude}`, `{longitude}`, `{map_link}`, and `{time}`.
 - Contacts, templates, and SIM choice stay on the device; no SOS or location history.
+- First-run screen: all permissions in one place, plus a reminder that the app is not an emergency service.
 - Russian and English UI.
 
 ## How it works
+
+On first launch ImHere shows a setup screen with the permissions it needs and a
+short reminder that it does not replace emergency services. You can skip it:
+the main screen then asks for the missing permissions when you press SOS.
 
 Before sending, ImHere checks permissions, SOS contacts, and the selected SIM.
 It requests a fresh location fix for up to 20 seconds and accepts only a fix that

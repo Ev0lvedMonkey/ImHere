@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 
 /**
@@ -29,8 +30,23 @@ class SettingsRepository(
         }
         .stateIn(scope, SharingStarted.Eagerly, AppState())
 
+    /**
+     * `null` until the store has emitted its first value. The first-run screen
+     * must not flash for existing users while DataStore is still loading.
+     */
+    val onboardingState: StateFlow<Boolean?> = dataStore.data
+        .catch { throwable ->
+            if (throwable is IOException) emit(AppState()) else throw throwable
+        }
+        .map { it.sanitized().onboardingCompleted }
+        .stateIn(scope, SharingStarted.Eagerly, null)
+
     suspend fun update(transform: (AppState) -> AppState) {
         dataStore.updateData { current -> transform(current).sanitized() }
+    }
+
+    suspend fun completeOnboarding() {
+        update { current -> current.copy(onboardingCompleted = true) }
     }
 
     /**

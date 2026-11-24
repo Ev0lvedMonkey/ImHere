@@ -31,6 +31,32 @@
     <string name="main_open_app_settings">Настройки</string>
     <string name="main_disclaimer">Приложение не является заменой официальным экстренным службам.</string>
 
+    <!-- Onboarding -->
+    <string name="onboarding_title">Перед началом</string>
+    <string name="onboarding_intro">ImHere отправляет ваши координаты выбранным контактам обычным SMS. Выдайте разрешения сейчас, чтобы SOS сработал с первого раза.</string>
+    <string name="onboarding_disclaimer_title">Это не экстренная служба</string>
+    <string name="onboarding_disclaimer_text">ImHere не заменяет звонок по номеру 112 или другому номеру экстренных служб. Доставка SMS зависит от мобильной сети, телефона получателя и точности геолокации, поэтому сообщение может прийти с задержкой или не прийти вовсе. В реальной опасности сначала звоните в экстренные службы.</string>
+    <string name="onboarding_permissions_title">Разрешения</string>
+    <string name="onboarding_location_title">Точная геолокация</string>
+    <string name="onboarding_location_text">Нужна, чтобы вставить координаты в SOS-сообщение.</string>
+    <string name="onboarding_sms_title">Отправка SMS</string>
+    <string name="onboarding_sms_text">Нужна, чтобы отправить сообщение SOS-контактам, не открывая приложение сообщений.</string>
+    <string name="onboarding_phone_title">Телефон и SIM</string>
+    <string name="onboarding_phone_text">Нужно, чтобы показать список SIM-карт и отправлять с выбранной.</string>
+    <string name="onboarding_notifications_title">Уведомления</string>
+    <string name="onboarding_notifications_text">Показывают ход и результат SOS. Необязательно, но рекомендуется.</string>
+    <string name="onboarding_contacts_title">Контакты</string>
+    <string name="onboarding_contacts_text">Необязательно. Используется только для выбора получателя из телефонной книги.</string>
+    <string name="onboarding_grant_all">Разрешить всё</string>
+    <string name="onboarding_continue">Продолжить</string>
+    <string name="onboarding_continue_without">Продолжить без разрешений</string>
+    <string name="onboarding_permission_granted">Разрешено</string>
+    <string name="onboarding_permission_denied">Не разрешено</string>
+    <string name="onboarding_location_approximate">Только приблизительно</string>
+    <string name="onboarding_optional">Необязательно</string>
+    <string name="onboarding_settings_hint">Если Android больше не показывает запрос, включите разрешение вручную в настройках приложения.</string>
+    <string name="onboarding_later_note">Остальные разрешения можно выдать позже: приложение попросит их при нажатии SOS.</string>
+
     <!-- Contacts -->
     <string name="contacts_title">Контакты</string>
     <string name="contacts_empty">Контактов пока нет</string>

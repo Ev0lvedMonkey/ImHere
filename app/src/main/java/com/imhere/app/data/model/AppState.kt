@@ -11,6 +11,10 @@ import kotlinx.serialization.Serializable
  * edited a template gets it in the language they switched to.
  *
  * [selectedSubscriptionId] references a SIM subscription id, see Settings 6.3.
+ *
+ * [onboardingCompleted] is `false` only for a fresh install: the first-run
+ * screen with the permission list and the emergency-services disclaimer is
+ * shown until the user continues.
  */
 @Serializable
 data class AppState(
@@ -19,6 +23,7 @@ data class AppState(
     val sosTemplate: String? = null,
     val plainTemplate: String? = null,
     val selectedSubscriptionId: Int? = null,
+    val onboardingCompleted: Boolean = false,
 ) {
 
     val sosContacts: List<Contact> get() = contacts.filter { it.isSos }
@@ -36,11 +41,14 @@ data class AppState(
             contacts = cleaned,
             sosTemplate = sosTemplate?.takeIf { it.isNotBlank() },
             plainTemplate = plainTemplate?.takeIf { it.isNotBlank() },
+            // Schema 1 files come from builds that existed before the first-run
+            // screen, so their users are already past onboarding.
+            onboardingCompleted = onboardingCompleted || schemaVersion < CURRENT_SCHEMA_VERSION,
             schemaVersion = CURRENT_SCHEMA_VERSION,
         )
     }
 
     companion object {
-        const val CURRENT_SCHEMA_VERSION = 1
+        const val CURRENT_SCHEMA_VERSION = 2
     }
 }

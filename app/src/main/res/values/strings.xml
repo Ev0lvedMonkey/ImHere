@@ -31,6 +31,32 @@
     <string name="main_open_app_settings">Settings</string>
     <string name="main_disclaimer">The app is not a replacement for official emergency services.</string>
 
+    <!-- Onboarding -->
+    <string name="onboarding_title">Before you start</string>
+    <string name="onboarding_intro">ImHere sends your coordinates to the contacts you choose in a regular SMS. Grant the permissions now so an SOS works on the first try.</string>
+    <string name="onboarding_disclaimer_title">Not an emergency service</string>
+    <string name="onboarding_disclaimer_text">ImHere does not replace a call to 112 or another emergency number. SMS delivery depends on the mobile network, the recipient\'s phone, and the accuracy of your location, so a message may arrive late or not at all. In a real emergency, call the emergency services first.</string>
+    <string name="onboarding_permissions_title">Permissions</string>
+    <string name="onboarding_location_title">Precise location</string>
+    <string name="onboarding_location_text">Used to put your coordinates into the SOS message.</string>
+    <string name="onboarding_sms_title">Send SMS</string>
+    <string name="onboarding_sms_text">Used to send the message to your SOS contacts without opening the messaging app.</string>
+    <string name="onboarding_phone_title">Phone and SIM</string>
+    <string name="onboarding_phone_text">Used to list your SIM cards and send from the one you select.</string>
+    <string name="onboarding_notifications_title">Notifications</string>
+    <string name="onboarding_notifications_text">Show the progress and the result of an SOS. Optional, but recommended.</string>
+    <string name="onboarding_contacts_title">Contacts</string>
+    <string name="onboarding_contacts_text">Optional. Used only to pick a recipient from your phone book.</string>
+    <string name="onboarding_grant_all">Allow all</string>
+    <string name="onboarding_continue">Continue</string>
+    <string name="onboarding_continue_without">Continue without permissions</string>
+    <string name="onboarding_permission_granted">Granted</string>
+    <string name="onboarding_permission_denied">Not granted</string>
+    <string name="onboarding_location_approximate">Approximate only</string>
+    <string name="onboarding_optional">Optional</string>
+    <string name="onboarding_settings_hint">If Android no longer shows the request, enable the permission manually in the app settings.</string>
+    <string name="onboarding_later_note">Any remaining permission can be granted later: the app will ask for it when you press SOS.</string>
+
     <!-- Contacts -->
     <string name="contacts_title">Contacts</string>
     <string name="contacts_empty">No contacts yet</string>
